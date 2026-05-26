@@ -263,7 +263,10 @@ img {
   -webkit-text-stroke: 1.5px #C8A96E;
   color: transparent;
 }
-
+.contact-subline {
+  color: #ffe7b0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
 .heading-editorial-label {
   font-size: clamp(1.5rem, 3vw, 2.5rem) !important;
   letter-spacing: 0.08em !important;
@@ -277,8 +280,7 @@ img {
 
 /* Navbar — compact for 100% zoom */
 .site-nav {
-  position: fixed;
-  top: 0;
+ position: absolute;
   left: 0;
   right: 0;
   z-index: 100;
@@ -338,7 +340,154 @@ img {
 .nav-on-hero:not(.nav-scrolled) .nav-brand-name {
   color: var(--color-off-white);
 }
+/* FEELING SECTION — full viewport lock */
+.feeling-section {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: #f5f2ee;
+  /* Prevents any partial-visibility rendering bleed */
+  contain: strict;
+}
 
+/* SIDE CARDS — no transition delay, driven by RAF */
+.side {
+  position: absolute;
+  width: 26vw;
+  height: 42vh;
+  will-change: transform;
+  /* No CSS transition — JS lerp controls smoothness */
+  transition: none;
+}
+
+.left-top    { top: 6%;    left: 5%;  transform: translateX(var(--lx, 0)); }
+.left-bottom { bottom: 6%; left: 3%;  transform: translateX(var(--lx, 0)); }
+.right-top   { top: 6%;    right: 5%; transform: translateX(var(--rx, 0)); }
+.right-bottom{ bottom: 6%; right: 3%; transform: translateX(var(--rx, 0)); }
+
+/* CENTER — no CSS transition, JS lerp handles it */
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42vw;
+  height: 85vh;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  will-change: transform;
+  transform-origin: center center;
+  transition: none;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  text-decoration: none;
+  color: white;
+  position: relative;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+}
+.feeling-zoom-title {
+  position: absolute;
+  top: 12%;
+  right: 6%;
+  z-index: 9999;
+
+  max-width: 560px;
+
+  /* FORCE VISIBILITY BASE STATE */
+  opacity: 0;
+  transform: translateY(30px);
+
+  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* CRITICAL: ensures readability on ANY background */
+  padding: 24px 28px;
+  border-radius: 16px;
+
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* SHOW STATE */
+.feeling-zoom-title--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* LABEL */
+.feeling-zoom-title__label {
+  font-size: 0.9rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 600;
+
+  color: rgba(255, 255, 255, 0.75);
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* BIG TITLE */
+.feeling-zoom-title__heading {
+  font-size: clamp(3rem, 5vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+
+  color: #ffffff;
+  margin: 0 0 22px 0;
+}
+
+.feeling-zoom-title__heading em {
+  font-style: normal;
+  font-weight: 900;
+  color: #ffffff;
+  display: block;
+}
+
+/* CTA */
+.feeling-zoom-title__cta {
+  display: inline-block;
+
+  font-size: 1.05rem;
+  font-weight: 800;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  padding: 12px 20px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  transition: all 0.25s ease;
+}
+
+.feeling-zoom-title__cta:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+/* Kill old helpers */
+.floating-titles { display: none; }
+.cta { display: none; }
 .desktop-nav {
   display: none;
   gap: clamp(28px, 3.5vw, 48px);
@@ -2279,13 +2428,22 @@ a.site-footer-contact-line:hover {
 /* Process section typography */
 .process-step-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(17px, 1.6vw, 22px);
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: var(--color-text);
-  line-height: 1.2;
-}
+  font-size: clamp(22px, 2.2vw, 32px);
+  font-weight: 900;
+  margin-bottom: 10px;
+  font-style: italic;
 
+  line-height: 1.15;
+
+  color: #d4af37; /* rich gold */
+
+  letter-spacing: 0.5px;
+  text-transform: none;
+text-shadow:
+  0 1px 0 rgba(0, 0, 0, 0.4),
+  0 0 12px rgba(212, 175, 55, 0.35),
+  0 0 24px rgba(212, 175, 55, 0.15);
+}
 .process-step-desc {
   font-size: clamp(12px, 1.1vw, 14px);
   font-weight: 600;
@@ -2680,40 +2838,414 @@ a.site-footer-contact-line:hover {
   z-index: 3;
   padding-top: 80px;
 }
+/* =========================================================
+   CONTACT SECTION
+========================================================= */
 
-/* Contact section — give it more breathing room */
 .section-contact {
   position: relative;
   z-index: 2;
+
   overflow: visible;
+
   margin-bottom: -220px;
+
   padding: 140px 60px 280px;
 }
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.contact-header {
+  position: relative;
+  z-index: 3;
+
+  text-align: center;
+
+  margin-bottom: 52px;
+}
+
+.heading-contact-journey {
+  color: #fff8ef;
+
+  font-size: clamp(3rem, 6vw, 5.6rem);
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-weight: 400;
+
+  letter-spacing: 0.04em;
+
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.text-journey-brown {
+  color: #f1c67a;
+}
+
+/* =========================================================
+   MAIN IMAGE LAYOUT
+========================================================= */
+
+.contact-layout {
+  position: relative;
+
+  min-height: 760px;
+
+  border-radius: 36px;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 40px 100px rgba(20, 12, 4, 0.24);
+}
+
+/* =========================================================
+   BACKGROUND IMAGE
+========================================================= */
+
+.contact-image-wrap {
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+}
+
+.contact-bg-image {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transform: scale(1.03);
+
+  filter:
+    brightness(0.42)
+    contrast(1.08)
+    saturate(0.92);
+}
+
+/* =========================================================
+   DARK OVERLAY
+========================================================= */
+
+.contact-layout::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(12, 8, 4, 0.28),
+      rgba(12, 8, 4, 0.74)
+    );
+}
+
+/* =========================================================
+   CENTER CONTENT
+========================================================= */
+
+.contact-overlay-content {
+  position: relative;
+
+  z-index: 3;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px;
+}
+
+/* =========================================================
+   OLD / EDITORIAL FORM
+========================================================= */
+
+.contact-form-card {
+  position: relative;
+
+  width: min(430px, 92%);
+
+  padding:
+    30px
+    30px
+    24px;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(52, 40, 24, 0.76),
+      rgba(34, 24, 14, 0.84)
+    );
+
+  border:
+    1px solid rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* aged paper texture */
+
+.contact-form-card::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    radial-gradient(
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    );
+
+  background-size: 8px 8px;
+
+  opacity: 0.18;
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.bamboo-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.floating-field {
+  position: relative;
+}
+
+.floating-field input,
+.floating-field textarea,
+.floating-field select {
+  width: 100%;
+
+  background: transparent;
+
+  border: none;
+
+  border-bottom:
+    1px solid rgba(255, 241, 219, 0.22);
+
+  padding:
+    12px 0
+    8px;
+
+  color: #fff7eb;
+
+  font-size: 0.95rem;
+
+  font-family:
+    "Georgia",
+    "Times New Roman",
+    serif;
+
+  letter-spacing: 0.03em;
+
+  outline: none;
+
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.22);
+}
+
+/* textarea shorter */
+
+.floating-field textarea {
+  min-height: 68px;
+
+  resize: none;
+}
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+.floating-field label {
+  position: absolute;
+
+  left: 0;
+  top: 12px;
+
+  color: rgba(255, 243, 224, 0.72);
+
+  font-size: 0.82rem;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.14em;
+
+  transition: all 0.24s ease;
+
+  pointer-events: none;
+
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.22);
+}
+
+.floating-field.is-active label {
+  top: -8px;
+
+  font-size: 0.65rem;
+
+  color: #ffdca0;
+}
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.btn-bamboo-submit {
+  margin-top: 10px;
+
+  border: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      #c99749,
+      #f1c67a
+    );
+
+  color: #2d1d0c;
+
+  padding:
+    12px
+    18px;
+
+  border-radius: 999px;
+
+  font-size: 0.72rem;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.18em;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
+
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.btn-bamboo-submit:hover {
+  transform: translateY(-2px);
+
+  opacity: 0.96;
+
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.28);
+}
+
+/* =========================================================
+   BAMBOO STALKS
+========================================================= */
+
+.contact-bamboo-stalks {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+}
+
+.contact-stalk {
+  position: absolute;
+  top: 0;
+}
+
+/* =========================================================
+   REMOVE OLD ARCH IMAGE
+========================================================= */
+
+.arch-image-wrap--contact {
+  display: none;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
 
 @media (max-width: 768px) {
   .section-contact {
     padding: 100px 24px 120px;
+
     margin-bottom: 0;
   }
+
+  .contact-layout {
+    min-height: 620px;
+  }
+
+  .contact-overlay-content {
+    padding: 20px;
+  }
+
+  .contact-form-card {
+    width: 100%;
+
+    padding:
+      24px
+      22px
+      22px;
+  }
+
+  .heading-contact-journey {
+    font-size: 2.6rem;
+  }
+
   .section-feeling {
     margin-bottom: 0;
-    padding-bottom: clamp(80px, 10vw, 120px);
+
+    padding-bottom:
+      clamp(80px, 10vw, 120px);
+
     overflow: hidden;
   }
+
   .portfolio-after-process {
     margin-bottom: 0;
   }
 }
-
-/* ─── IBUKU-STYLE ARCH IMAGE — bigger contact arch ───────────────────────── */
-.arch-image-wrap--contact {
-  width: min(480px, 100%);
-  height: 820px;
-  min-height: 700px;
-  margin-top: 40px;
-  box-shadow: 0 40px 80px rgba(30, 20, 8, 0.18);
-}
-
 /* ─── TESTIMONIALS — keep remaining styles ───────────────────────────────── */
 .testimonials-pattern {
   position: absolute;

@@ -175,11 +175,11 @@ export const projects = [
 ]
 
 export const processSteps = [
-  { number: "01", title: "Discovery Call", description: "We understand your land, vision, budget and timeline. No templates. No packages. Every project starts with listening.", duration: "Week 1" },
-  { number: "02", title: "Design & Concept", description: "Our team creates bamboo-specific architectural designs inspired by your brief, site conditions, and local vernacular.", duration: "Weeks 2–4" },
-  { number: "03", title: "Material Sourcing", description: "We source and treat bamboo from certified farms across India — Assam, Kerala, Odisha — cured and borax-treated on-site.", duration: "Weeks 4–6" },
-  { number: "04", title: "Construction", description: "Our trained craftsmen build on-site. Fast, precise, no compromise on structural integrity or aesthetic intention.", duration: "1–6 Months" },
-  { number: "05", title: "Handover & Support", description: "We hand over a living structure with care documentation and stay available for aftercare, maintenance, and future expansions.", duration: "Ongoing" }
+  { number: "01", title: "Discovery Call", descriptions: "We understand your land, vision, budget and timeline. No templates. No packages. Every project starts with listening.", duration: "Week 1" },
+  { number: "02", title: "Design & Concept", descriptions: "Our team creates bamboo-specific architectural designs inspired by your brief, site conditions, and local vernacular.", duration: "Weeks 2–4" },
+  { number: "03", title: "Material Sourcing", descriptions: "We source and treat bamboo from certified farms across India — Assam, Kerala, Odisha — cured and borax-treated on-site.", duration: "Weeks 4–6" },
+  { number: "04", title: "Construction", descriptions: "Our trained craftsmen build on-site. Fast, precise, no compromise on structural integrity or aesthetic intention.", duration: "1–6 Months" },
+  { number: "05", title: "Handover & Support", descriptions: "We hand over a living structure with care documentation and stay available for aftercare, maintenance, and future expansions.", duration: "Ongoing" }
 ]
 
 /** vh per process step — lower = faster bamboo growth per scroll */

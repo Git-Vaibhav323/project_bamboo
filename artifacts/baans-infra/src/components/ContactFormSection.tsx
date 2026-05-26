@@ -9,8 +9,15 @@ const STALK_POSITIONS = [
   { left: "92%", height: 300 },
 ];
 
-function BambooStalkDecor({ left, height }: { left: string; height: number }) {
+function BambooStalkDecor({
+  left,
+  height,
+}: {
+  left: string;
+  height: number;
+}) {
   const nodes = Math.floor(height / 60);
+
   return (
     <svg
       className="contact-stalk"
@@ -19,7 +26,15 @@ function BambooStalkDecor({ left, height }: { left: string; height: number }) {
       preserveAspectRatio="none"
       aria-hidden
     >
-      <line x1="2" y1="0" x2="2" y2={height} stroke="rgba(139, 105, 20, 0.08)" strokeWidth="2" />
+      <line
+        x1="2"
+        y1="0"
+        x2="2"
+        y2={height}
+        stroke="rgba(139, 105, 20, 0.08)"
+        strokeWidth="2"
+      />
+
       {Array.from({ length: nodes }).map((_, i) => (
         <ellipse
           key={i}
@@ -95,6 +110,7 @@ function FloatingField({
           onBlur={() => setFocused(false)}
         />
       )}
+
       <label htmlFor={id}>{label}</label>
     </div>
   );
@@ -106,61 +122,119 @@ export default function ContactFormSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     setRippling(true);
-    window.setTimeout(() => setRippling(false), 600);
+
+    window.setTimeout(() => {
+      setRippling(false);
+    }, 600);
   };
 
   return (
-    <section ref={sectionRef} id="contact" className="scroll-reveal section-contact">
+    <section
+      ref={sectionRef}
+      id="contact"
+      className="scroll-reveal section-contact"
+    >
       <div className="contact-bamboo-stalks" aria-hidden>
         {STALK_POSITIONS.map((s) => (
-          <BambooStalkDecor key={s.left} left={s.left} height={s.height} />
+          <BambooStalkDecor
+            key={s.left}
+            left={s.left}
+            height={s.height}
+          />
         ))}
       </div>
 
       <div className="contact-inner-wrap">
-        <header className="contact-header">
-          <h2 className="heading-contact-journey heading-editorial">
-            Start Your <span className="text-journey-brown">Journey</span>
+               <header className="our-work-header">
+          <span className="section-label section-label--work">OUR WORK</span>
+          <h2 className="heading-editorial our-work-heading">
+<span className="our-work-heading-line">Start Your</span>
+<span className="our-work-heading-stroke text-hollow">Journey.</span>
           </h2>
         </header>
 
-        <div className="contact-grid">
-          <div className="contact-copy">
-            <h3 className="heading-editorial contact-copy-heading">
-              <span>Let&apos;s shape something</span>
-              <br />
-              <span className="text-golden">that breathes.</span>
-            </h3>
-            <p className="body-muted contact-copy-text">
-              Whether it&apos;s a riverside retreat, a private villa, or a
-              community pavilion — tell us about your land and we&apos;ll show
-              you what bamboo can become.
-            </p>
-            <div className="arch-image-wrap arch-image-wrap--contact image-bleed">
-              <LazyImage
-                src="/samples/4.jpg"
-                alt="Bamboo craft studio or site visit"
-                className="arch-image"
-              />
-            </div>
+        <div className="contact-layout">
+          {/* Background Image */}
+          <div className="contact-image-wrap">
+            <LazyImage
+              src="/samples/1.jpg"
+              alt="Bamboo craft studio or site visit"
+              className="contact-bg-image"
+            />
           </div>
 
-          <div className="contact-form-card">
-            <form className="bamboo-form" onSubmit={handleSubmit} noValidate>
-              <FloatingField id="name" label="Full Name" required />
-              <FloatingField id="email" label="Email" type="email" required />
-              <FloatingField id="phone" label="Phone" type="tel" />
-              <FloatingField id="message" label="Message" as="textarea" required />
-              <FloatingField id="budget" label="Budget Range (optional)" />
+          {/* Overlay Content */}
+          <div className="contact-overlay-content">
+            {/* Left Text */}
+            <div className="contact-copy">
+              <h3 className="heading-editorial contact-copy-heading">
+              <span className="contact-subline">
+  Let&apos;s shape something
+</span>
+                <br />
+                <span className="text-golden">
+                  that breathes.
+                </span>
+              </h3>
 
-              <button
-                type="submit"
-                className={`btn-bamboo-submit ${rippling ? "is-rippling" : ""}`}
+              <p className="body-muted contact-copy-text">
+                Whether it&apos;s a riverside retreat,
+                a private villa, or a community pavilion
+                — tell us about your land and we&apos;ll
+                show you what bamboo can become.
+              </p>
+            </div>
+
+            {/* Floating Form */}
+            <div className="contact-form-card">
+              <form
+                className="bamboo-form"
+                onSubmit={handleSubmit}
+                noValidate
               >
-                Send Your Vision
-              </button>
-            </form>
+                <FloatingField
+                  id="name"
+                  label="Full Name"
+                  required
+                />
+
+                <FloatingField
+                  id="email"
+                  label="Email"
+                  type="email"
+                  required
+                />
+
+                <FloatingField
+                  id="phone"
+                  label="Phone"
+                  type="tel"
+                />
+
+                <FloatingField
+                  id="message"
+                  label="Message"
+                  as="textarea"
+                  required
+                />
+
+                <FloatingField
+                  id="budget"
+                  label="Budget Range (optional)"
+                />
+
+                <button
+                  type="submit"
+                  className={`btn-bamboo-submit ${
+                    rippling ? "is-rippling" : ""
+                  }`}
+                >
+                  Send Your Vision
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

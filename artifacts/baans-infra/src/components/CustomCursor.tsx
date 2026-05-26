@@ -9,8 +9,7 @@ export default function CustomCursor() {
   const mouse = useRef({ x: 0, y: 0 });
   const dotPos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
-  
-  useEffect(() => {
+    useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
     };
