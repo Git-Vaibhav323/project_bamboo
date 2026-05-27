@@ -121,12 +121,6 @@ export default function Footer() {
                   {link.label}
                 </a>
               ))}
-              <a
-                href="/#explore-structure"
-                onClick={(e) => handleNavClick(e, "/#explore-structure")}
-              >
-                3D Structure Tour
-              </a>
             </nav>
           </div>
 
