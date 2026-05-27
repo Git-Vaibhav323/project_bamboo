@@ -36,10 +36,11 @@ export default function AdminProjects() {
 
   const fetchProjects = async () => {
     if (!supabase) { setLoading(false); return; }
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('projects')
-      .select('id, slug, name, location, type, year, cover_image, description')  // only columns we need for the list
+      .select('*')
       .order('created_at', { ascending: false });
+    if (error) console.error('Fetch error:', error);
     if (data) setProjects(data as Project[]);
     setLoading(false);
   };
@@ -91,22 +92,24 @@ export default function AdminProjects() {
       };
 
       if (editingProject) {
-        const { data } = await supabase!.from('projects').update(projectData).eq('id', editingProject.id).select().single();
-        if (data) {
-          // Optimistic update — no full re-fetch
-          setProjects(prev => prev.map(p => p.id === editingProject.id ? { ...p, ...data } : p));
-        }
+        const { error: updateError } = await supabase!
+          .from('projects')
+          .update(projectData)
+          .eq('id', editingProject.id);
+        if (updateError) throw updateError;
       } else {
-        const { data } = await supabase!.from('projects').insert([projectData]).select().single();
-        if (data) {
-          setProjects(prev => [data as Project, ...prev]);
-        }
+        const { error: insertError } = await supabase!
+          .from('projects')
+          .insert([projectData]);
+        if (insertError) throw insertError;
       }
 
+      // Always re-fetch the full list so the UI is in sync with the DB
+      await fetchProjects();
       resetForm();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error saving project:', err);
-      alert('Error saving project. Please try again.');
+      alert('Error saving project: ' + (err?.message || JSON.stringify(err)));
     } finally {
       setUploading(false);
       setUploadStatus('');
@@ -116,8 +119,9 @@ export default function AdminProjects() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this project?')) return;
     if (!supabase) return;
-    await supabase.from('projects').delete().eq('id', id);
-    setProjects(prev => prev.filter(p => p.id !== id));
+    const { error } = await supabase.from('projects').delete().eq('id', id);
+    if (error) { alert('Delete failed: ' + error.message); return; }
+    await fetchProjects();
   };
 
   const handleEdit = (project: Project) => {

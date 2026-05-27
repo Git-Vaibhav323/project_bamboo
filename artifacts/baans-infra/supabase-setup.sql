@@ -14,19 +14,31 @@ CREATE TABLE IF NOT EXISTS public.projects (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     slug TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
-    location TEXT NOT NULL,
-    state TEXT NOT NULL,
-    type TEXT NOT NULL CHECK (type IN ('Resorts', 'Villas', 'Pavilions & Commercial', 'Rammed Earth')),
-    year TEXT NOT NULL,
-    duration TEXT NOT NULL,
-    size TEXT NOT NULL,
-    description TEXT NOT NULL,
-    cover_image TEXT NOT NULL,
+    location TEXT,
+    state TEXT,
+    type TEXT,
+    year TEXT,
+    duration TEXT,
+    size TEXT,
+    description TEXT,
+    cover_image TEXT DEFAULT '',
     gallery_images TEXT[] DEFAULT '{}',
     tags TEXT[] DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
+
+-- Drop old CHECK constraint if it exists (from previous schema)
+ALTER TABLE public.projects DROP CONSTRAINT IF EXISTS projects_type_check;
+-- Make previously NOT NULL columns nullable (safe to run on existing table)
+ALTER TABLE public.projects ALTER COLUMN location DROP NOT NULL;
+ALTER TABLE public.projects ALTER COLUMN state DROP NOT NULL;
+ALTER TABLE public.projects ALTER COLUMN type DROP NOT NULL;
+ALTER TABLE public.projects ALTER COLUMN year DROP NOT NULL;
+ALTER TABLE public.projects ALTER COLUMN duration DROP NOT NULL;
+ALTER TABLE public.projects ALTER COLUMN size DROP NOT NULL;
+ALTER TABLE public.projects ALTER COLUMN description DROP NOT NULL;
+ALTER TABLE public.projects ALTER COLUMN cover_image DROP NOT NULL;
 
 CREATE INDEX IF NOT EXISTS idx_projects_slug       ON public.projects(slug);
 CREATE INDEX IF NOT EXISTS idx_projects_type       ON public.projects(type);
