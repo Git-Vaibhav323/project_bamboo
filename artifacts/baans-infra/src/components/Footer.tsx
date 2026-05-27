@@ -77,9 +77,13 @@ export default function Footer() {
           <p className="site-footer-about">{footerContent.about}</p>
           <p className="site-footer-founder">{footerContent.founderLine}</p>
           <p className="site-footer-closing">{footerContent.closing}</p>
-          <Link href="/contact" className="pill-btn site-footer-cta">
+          <a
+            href="/#contact"
+            className="pill-btn site-footer-cta"
+            onClick={(e) => handleNavClick(e, "/#contact")}
+          >
             {footerContent.cta}
-          </Link>
+          </a>
         </div>
 
         <div className="site-footer-grid">
@@ -121,6 +125,12 @@ export default function Footer() {
                   {link.label}
                 </a>
               ))}
+              <a
+                href="/#explore-structure"
+                onClick={(e) => handleNavClick(e, "/#explore-structure")}
+              >
+                3D Structure Tour
+              </a>
             </nav>
           </div>
 

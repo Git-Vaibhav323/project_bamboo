@@ -6,26 +6,25 @@ import { Link, useLocation } from 'wouter';
 export default function Admin() {
   const [, setLocation] = useLocation();
   const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  // Start as false — we check session immediately, no spinner on first load
+  const [loading, setLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
+    if (!supabase) return;
 
+    // Get current session synchronously from local storage first (no network call)
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setLoading(false);
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Listen for auth state changes (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      setLoginLoading(false); // stop spinner as soon as auth state resolves
     });
 
     return () => subscription.unsubscribe();
@@ -34,23 +33,21 @@ export default function Admin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+    setLoginLoading(true);
 
     if (!supabase) {
       setError('Supabase is not configured. Please add your credentials to the .env file.');
-      setLoading(false);
+      setLoginLoading(false);
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       setError(error.message);
-      setLoading(false);
+      setLoginLoading(false);
     }
+    // On success, onAuthStateChange fires → sets session → setLoginLoading(false)
   };
 
   const handleLogout = async () => {
@@ -61,7 +58,7 @@ export default function Admin() {
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p>Loading...</p>
+        <p style={{ color: 'var(--color-text-muted)' }}>Loading...</p>
       </div>
     );
   }
@@ -86,7 +83,7 @@ export default function Admin() {
               Then restart the dev server.
             </div>
           )}
-          
+
           {error && (
             <div style={{ padding: '12px', backgroundColor: '#fee', color: '#c00', borderRadius: '4px', marginBottom: '20px', fontSize: '14px' }}>
               {error}
@@ -101,6 +98,7 @@ export default function Admin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
                 style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '16px' }}
               />
             </div>
@@ -111,20 +109,22 @@ export default function Admin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
                 style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '16px' }}
               />
             </div>
             <button
               type="submit"
+              disabled={loginLoading}
               className="pill-btn primary"
               style={{ width: '100%', padding: '14px', fontSize: '16px', fontWeight: 700 }}
             >
-              Login
+              {loginLoading ? 'Signing in...' : 'Login'}
             </button>
           </form>
-          
+
           <Link href="/">
-            <span style={{ display: 'block', textAlign: 'center', marginTop: '20px', color: 'var(--color-text-muted)', fontSize: '14px' }}>
+            <span style={{ display: 'block', textAlign: 'center', marginTop: '20px', color: 'var(--color-text-muted)', fontSize: '14px', cursor: 'pointer' }}>
               ← Back to site
             </span>
           </Link>
@@ -143,32 +143,23 @@ export default function Admin() {
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
           <Link href="/admin/projects">
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              style={{ backgroundColor: 'var(--color-ivory)', padding: '32px', borderRadius: '8px', cursor: 'pointer' }}
-            >
+            <motion.div whileHover={{ scale: 1.02 }} style={{ backgroundColor: 'var(--color-ivory)', padding: '32px', borderRadius: '8px', cursor: 'pointer' }}>
               <h2 style={{ fontSize: '24px', marginBottom: '12px', color: 'var(--color-text)' }}>Manage Projects</h2>
               <p style={{ color: 'var(--color-text-muted)' }}>Add, edit, or remove projects from the portfolio</p>
             </motion.div>
           </Link>
 
           <Link href="/admin/team">
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              style={{ backgroundColor: 'var(--color-ivory)', padding: '32px', borderRadius: '8px', cursor: 'pointer' }}
-            >
+            <motion.div whileHover={{ scale: 1.02 }} style={{ backgroundColor: 'var(--color-ivory)', padding: '32px', borderRadius: '8px', cursor: 'pointer' }}>
               <h2 style={{ fontSize: '24px', marginBottom: '12px', color: 'var(--color-text)' }}>Manage Team</h2>
               <p style={{ color: 'var(--color-text-muted)' }}>Update team member information and photos</p>
             </motion.div>
           </Link>
 
           <Link href="/admin/contacts">
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              style={{ backgroundColor: 'var(--color-ivory)', padding: '32px', borderRadius: '8px', cursor: 'pointer' }}
-            >
+            <motion.div whileHover={{ scale: 1.02 }} style={{ backgroundColor: 'var(--color-ivory)', padding: '32px', borderRadius: '8px', cursor: 'pointer' }}>
               <h2 style={{ fontSize: '24px', marginBottom: '12px', color: 'var(--color-text)' }}>Contact Submissions</h2>
               <p style={{ color: 'var(--color-text-muted)' }}>View and manage contact form submissions</p>
             </motion.div>

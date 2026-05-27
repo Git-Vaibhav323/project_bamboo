@@ -82,7 +82,6 @@ export const footerRegions = [
 export const navLinks = [
   { label: "Home", path: "/" },
   { label: "Projects", path: "/projects" },
-  { label: "Team", path: "/team" },
   { label: "About", path: "/about" },
   { label: "Contact", path: "/contact" }
 ]
