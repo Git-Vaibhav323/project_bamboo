@@ -127,7 +127,7 @@ export default function About() {
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px' }}>
           <Counter from={0} to={50} suffix="+" label="Projects Completed" />
           <Counter from={0} to={10} suffix="+" label="Years of Craft" />
-          <Counter from={0} to={8} suffix="" label="States Across India" />
+          <Counter from={0} to={8} suffix="+" label="States Across India" />
           <Counter from={0} to={22} suffix="K" label="Community Members" />
         </div>
       </section>
@@ -139,7 +139,7 @@ export default function About() {
           <h2 style={{ fontSize: 'clamp(36px, 5vw, 56px)', marginTop: '16px' }}>Our Core Values</h2>
         </div>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' }}>
+        <div className="about-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '40px' }}>
           {aboutContent.values.map((value, idx) => (
             <motion.div
               key={value.title}

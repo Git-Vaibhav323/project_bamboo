@@ -3,6 +3,8 @@ import { Link, useLocation } from 'wouter';
 import { navLinks } from '../data/data';
 import { AnimatePresence, motion } from 'framer-motion';
 import LazyImage from './LazyImage';
+import { FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { siteConfig } from '../data/data';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -20,8 +22,6 @@ export default function Navbar() {
     .filter(Boolean)
     .join(' ');
 
-  const useLightNav = isHome;
-
   return (
     <>
       {/* NON-STICKY NAVBAR (make sure CSS is NOT fixed/sticky) */}
@@ -34,9 +34,8 @@ export default function Navbar() {
             alt="BAANS INFRA"
             className="nav-logo-img"
             style={{
-              height: '72px',   // BIGGER LOGO
+              height: '92px',
               width: 'auto',
-              filter: useLightNav ? 'brightness(0) invert(1)' : 'none',
             }}
           />
           <span className="nav-brand-name">Baans Infra</span>
@@ -49,7 +48,7 @@ export default function Navbar() {
               <span
                 className={`nav-link-text ${
                   location === link.path ? 'nav-link-text--active' : ''
-                } ${useLightNav ? 'nav-link-text--light' : ''}`}
+                } ${isHome ? 'nav-link-text--light' : ''}`}
                 style={{
                   fontWeight: 700,        // BOLDER
                   fontSize: '1.05rem',    // SLIGHTLY LARGER
@@ -62,19 +61,14 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <Link href="/contact">
-            <span
-              className={`pill-btn nav-cta ${
-                useLightNav ? 'nav-cta--light' : ''
-              }`}
-              style={{
-                fontWeight: 800,
-                padding: '12px 18px',
-              }}
-            >
-              Start Your Project
-            </span>
-          </Link>
+          <div className="nav-socials" aria-label="Social links">
+            <a href={siteConfig.socialLinks.instagram} aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+              <FaInstagram />
+            </a>
+            <a href={siteConfig.socialLinks.linkedin} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+              <FaLinkedinIn />
+            </a>
+          </div>
         </div>
 
         {/* MOBILE TOGGLE */}

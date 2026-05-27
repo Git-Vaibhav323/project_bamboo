@@ -28,7 +28,7 @@ export default function Contact() {
           .insert([{
             name: formData.name,
             email: formData.email,
-            phone: formData.phone || null,
+            phone: formData.phone,
             company: formData.company || null,
             budget: formData.budget || null,
             message: formData.message,
@@ -156,7 +156,8 @@ export default function Contact() {
                   />
                   <input 
                     type="tel" 
-                    placeholder="Phone Number" 
+                    placeholder="Phone Number *" 
+                    required
                     style={inputStyle}
                     value={formData.phone}
                     onChange={e => setFormData({...formData, phone: e.target.value})}

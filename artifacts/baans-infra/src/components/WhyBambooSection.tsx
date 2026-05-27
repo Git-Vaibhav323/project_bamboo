@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { whyBambooReasons } from "../data/data";
+import { Link } from "wouter";
 
 const WHY_BAMBOO_DISPLAY = whyBambooReasons.slice(0, 3);
 import { useScrollReveal } from "../hooks/useScrollReveal";
@@ -76,10 +77,6 @@ export default function WhyBambooSection() {
         const inset = 100 - p * 100;
         reveal.style.clipPath = `inset(${inset}% 0 0 0)`;
         reveal.style.setProperty("--gate-reveal", String(p));
-        const gate = reveal.querySelector(".why-bamboo-gate") as HTMLElement | null;
-        if (gate) {
-          gate.style.transform = `scale(${0.92 + p * 0.08})`;
-        }
       }
       rafRef.current = requestAnimationFrame(animateReveal);
     };
@@ -107,11 +104,11 @@ export default function WhyBambooSection() {
       <div className="why-bamboo-split">
         <div className="why-bamboo-left">
           <div className="why-bamboo-left-inner">
-            <span className="section-label section-label--why">WHY BAMBOO</span>
+            <span className="section-label section-label--why">Why Choose Us?</span>
             <h2 className="heading-editorial heading-why-bamboo">
-              <span>The strongest material</span>
+              <span>Built on proof,</span>
               <br />
-              <span className="text-hollow">nature ever made.</span>
+              <span className="text-hollow">not promises.</span>
             </h2>
 
             <div className="why-bamboo-features">
@@ -136,6 +133,10 @@ export default function WhyBambooSection() {
                 </div>
               ))}
             </div>
+
+            <Link href="/contact" className="pill-btn primary why-bamboo-cta">
+              Start your journey with us now
+            </Link>
           </div>
         </div>
 

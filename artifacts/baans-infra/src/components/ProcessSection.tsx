@@ -20,8 +20,7 @@ export default function ProcessSection() {
       if (!plants.length) return;
 
       gsap.set(plants, {
-        scaleY: 0,
-        transformOrigin: 'bottom center',
+        clipPath: 'inset(100% 0 0 0)',
         opacity: 0,
       });
 
@@ -54,7 +53,7 @@ export default function ProcessSection() {
         tl.to(
           plants[i],
           {
-            scaleY: 1,
+            clipPath: 'inset(0% 0 0 0)',
             opacity: 1,
             duration: 1.2,
             ease: 'power2.out',
@@ -154,7 +153,7 @@ export default function ProcessSection() {
                 </span>
 
                 <h3 className="process-step-title">{step.title}</h3>
-                <p className="process-step-desc">{step.description}</p>
+                <p className="process-step-desc">{step.descriptions}</p>
               </div>
             ))}
           </div>
@@ -225,7 +224,6 @@ export default function ProcessSection() {
                           objectFit: 'contain',
                           objectPosition: 'bottom center',
                           display: 'block',
-                          transformOrigin: 'bottom center',
                         }}
                       />
                     </div>

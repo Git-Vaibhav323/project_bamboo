@@ -23,6 +23,10 @@ export default function LoadingScreen() {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
+  const rows = [1, 2, 3, 4, 5];
+  const totalTiles = rows.reduce((sum, n) => sum + n, 0);
+  let tileIndex = 0;
+
   return (
     <AnimatePresence>
       {visible && (
@@ -33,13 +37,13 @@ export default function LoadingScreen() {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: '#1E1408',
+            background: 'radial-gradient(circle at 50% 35%, #3B2F1E 0%, #1E1408 58%, #0f0a04 100%)',
             zIndex: 9999,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '48px',
+            gap: '34px',
           }}
         >
           <motion.img
@@ -49,7 +53,8 @@ export default function LoadingScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             style={{
-              height: '72px',
+              height: '116px',
+              width: 'auto',
               filter: 'brightness(0) invert(1)',
               borderRadius: 0,
             }}
@@ -59,30 +64,31 @@ export default function LoadingScreen() {
             }}
           />
 
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-            {/* Bamboo rod loading bar */}
-            <div
-              style={{
-                width: '260px',
-                height: '26px',
-                backgroundColor: 'rgba(250,247,242,0.08)',
-                borderRadius: '4px',
-                overflow: 'hidden',
-                position: 'relative',
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  right: `${(1 - progress) * 100}%`,
-                  backgroundImage: 'url(/bamboo-hor.png)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center left',
-                  transition: 'right 0.04s linear',
-                  borderRadius: '4px',
-                }}
-              />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '18px' }}>
+            <div className="loading-bamboo-stack" aria-hidden>
+              {rows.map((count, rowIndex) => (
+                <div key={rowIndex} className="loading-bamboo-row">
+                  {Array.from({ length: count }).map((_, colIndex) => {
+                    const visibleAt = tileIndex / totalTiles;
+                    const isLoaded = progress >= visibleAt;
+                    tileIndex += 1;
+
+                    return (
+                      <motion.div
+                        key={`${rowIndex}-${colIndex}`}
+                        className="loading-bamboo-tile"
+                        initial={false}
+                        animate={{
+                          opacity: isLoaded ? 1 : 0.16,
+                          y: isLoaded ? 0 : 12,
+                          filter: isLoaded ? 'saturate(1)' : 'saturate(0.2)',
+                        }}
+                        transition={{ duration: 0.28, ease: 'easeOut' }}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
             </div>
 
             <motion.span
@@ -94,10 +100,10 @@ export default function LoadingScreen() {
                 fontSize: '10px',
                 letterSpacing: '0.28em',
                 textTransform: 'uppercase',
-                color: 'rgba(250,247,242,0.4)',
+                color: 'rgba(250,247,242,0.62)',
               }}
             >
-              {Math.round(progress * 100)}%
+              Building with nature {Math.round(progress * 100)}%
             </motion.span>
           </div>
         </motion.div>

@@ -109,7 +109,7 @@ export default function ContactFormSection() {
           .insert([{
             name: formData.name,
             email: formData.email,
-            phone: formData.phone || null,
+            phone: formData.phone,
             message: formData.message,
             budget: formData.budget || null,
             source: "home_page",
@@ -200,7 +200,7 @@ export default function ContactFormSection() {
 
                   <FloatingField id="name"    label="Full Name"             required value={formData.name}    onChange={set("name")} />
                   <FloatingField id="email"   label="Email"    type="email" required value={formData.email}   onChange={set("email")} />
-                  <FloatingField id="phone"   label="Phone"    type="tel"            value={formData.phone}   onChange={set("phone")} />
+                  <FloatingField id="phone"   label="Phone"    type="tel" required   value={formData.phone}   onChange={set("phone")} />
                   <FloatingField id="message" label="Message"  as="textarea" required value={formData.message} onChange={set("message")} />
                   <FloatingField id="budget"  label="Budget Range (optional)"        value={formData.budget}  onChange={set("budget")} />
 

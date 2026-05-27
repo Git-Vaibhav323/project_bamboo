@@ -58,3 +58,32 @@ export interface ContactSubmission {
   created_at: string;
   updated_at: string;
 }
+
+export interface MediaFeature {
+  id: string;
+  title: string;
+  publication: string;
+  category: string;
+  url: string;
+  logo_url?: string;
+  excerpt?: string;
+  published_at?: string;
+  "order": number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Blog {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  cover_image?: string;
+  author?: string;
+  category?: string;
+  published_at?: string;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}

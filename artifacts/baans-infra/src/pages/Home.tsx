@@ -12,6 +12,7 @@ import SectionDivider from "../components/SectionDivider";
 import SketchfabSection from "../components/SketchfabSection";
 import TestimonialsSection from "../components/TestimonialsSection";
 import ContactFormSection from "../components/ContactFormSection";
+import FeaturedOnSection from "../components/FeaturedOnSection";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 
 const FRAME_COUNT = 60;
@@ -344,9 +345,13 @@ export default function Home() {
                 fontSize: "clamp(1rem, 2.2vw, 1.35rem)",
                 textShadow: "0 1px 8px rgba(0,0,0,0.5)",
                 fontStyle: "italic", fontWeight: 300,
+                marginBottom: "30px",
               }}>
-                Luxury bamboo resorts, villas &amp; pavilions — built across India.
+                Luxury bamboo resorts, villas &amp; pavilions — PAN India.
               </p>
+              <Link href="/contact" className="hero-journey-cta">
+                Start your journey with us now
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
@@ -365,7 +370,7 @@ export default function Home() {
                 display: "flex", flexDirection: "column",
                 alignItems: "center", justifyContent: "center",
                 textAlign: "center", padding: "0 clamp(24px, 6vw, 80px)",
-                pointerEvents: "none", zIndex: 2,
+                pointerEvents: "auto", zIndex: 2,
               }}
             >
               <h2 style={{
@@ -388,6 +393,9 @@ export default function Home() {
                 <br />
                 that breathes.
               </h2>
+              <Link href="/contact" className="hero-journey-cta hero-journey-cta--second">
+                Start your journey with us now
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
@@ -467,6 +475,8 @@ export default function Home() {
       <OurWorkSection />
       <SectionDivider fill="var(--color-forest-dark)" />
       <TestimonialsSection />
+      <SectionDivider fill="var(--color-off-white)" flip />
+      <FeaturedOnSection />
       <SectionDivider fill="var(--color-cream)" flip />
       <ContactFormSection />
     </div>

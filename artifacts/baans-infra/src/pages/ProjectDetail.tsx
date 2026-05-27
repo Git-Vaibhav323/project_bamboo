@@ -133,104 +133,253 @@ export default function ProjectDetail() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Back to Projects
           </Link>
-          <h1 style={{ fontSize: 'clamp(48px, 8vw, 80px)', lineHeight: 1.1, marginBottom: '16px' }}>{project.name}</h1>
-          <p className="tag" style={{ color: 'var(--color-leaf)' }}>{project.location}</p>
+<h1
+  style={{
+    fontSize: 'clamp(48px, 8vw, 80px)',
+    lineHeight: 1.1,
+    marginBottom: '16px',
+    color: '#ffffff',
+    fontWeight: 800,
+    letterSpacing: '-0.03em'
+  }}
+>
+  {project.name}
+</h1>          <p className="tag" style={{ color: 'var(--color-leaf)' }}>{project.location}</p>
         </motion.div>
       </div>
+{/* Details */}
+<div
+  style={{
+    maxWidth: '1100px',
+    margin: '0 auto',
+    padding: '64px 40px'
+  }}
+>
+  {/* Top Details Row */}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    style={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '32px',
+      alignItems: 'center',
+      paddingBottom: '24px',
+      marginBottom: '36px',
+      borderBottom: '1px solid rgba(255,255,255,0.08)'
+    }}
+  >
+    {project.location && (
+      <div>
+        <p
+          className="tag"
+          style={{
+            fontSize: '10px',
+            marginBottom: '4px',
+            color: 'var(--color-text-muted)'
+          }}
+        >
+          Location
+        </p>
 
-      {/* Details */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '80px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(250px, 1fr) 2fr', gap: '60px' }}>
+        <p style={{ fontSize: '15px', fontWeight: 600 }}>
+          {project.location}
+        </p>
+      </div>
+    )}
 
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingRight: '20px', borderRight: '1px solid rgba(0,0,0,0.1)' }}
+    {project.type && (
+      <div>
+        <p
+          className="tag"
+          style={{
+            fontSize: '10px',
+            marginBottom: '4px',
+            color: 'var(--color-text-muted)'
+          }}
+        >
+          Type
+        </p>
+
+        <p style={{ fontSize: '15px', fontWeight: 600 }}>
+          {project.type}
+        </p>
+      </div>
+    )}
+
+    {project.size && (
+      <div>
+        <p
+          className="tag"
+          style={{
+            fontSize: '10px',
+            marginBottom: '4px',
+            color: 'var(--color-text-muted)'
+          }}
+        >
+          Size
+        </p>
+
+        <p style={{ fontSize: '15px', fontWeight: 600 }}>
+          {project.size}
+        </p>
+      </div>
+    )}
+
+    {project.duration && (
+      <div>
+        <p
+          className="tag"
+          style={{
+            fontSize: '10px',
+            marginBottom: '4px',
+            color: 'var(--color-text-muted)'
+          }}
+        >
+          Duration
+        </p>
+
+        <p style={{ fontSize: '15px', fontWeight: 600 }}>
+          {project.duration}
+        </p>
+      </div>
+    )}
+
+    {project.year && (
+      <div>
+        <p
+          className="tag"
+          style={{
+            fontSize: '10px',
+            marginBottom: '4px',
+            color: 'var(--color-text-muted)'
+          }}
+        >
+          Year
+        </p>
+
+        <p style={{ fontSize: '15px', fontWeight: 600 }}>
+          {project.year}
+        </p>
+      </div>
+    )}
+  </motion.div>
+
+  {/* Description */}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+  >
+    <h2
+      className="subheading"
+      style={{
+        fontSize: '28px',
+        marginBottom: '18px',
+        color: 'var(--color-primary)'
+      }}
+    >
+      The Vision
+    </h2>
+
+    <p
+      style={{
+        fontSize: '17px',
+        color: 'var(--color-text-muted)',
+        lineHeight: 1.9,
+        maxWidth: '900px'
+      }}
+    >
+      {project.description}
+    </p>
+
+    {project.tags.length > 0 && (
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '8px',
+          marginTop: '28px'
+        }}
+      >
+        {project.tags.map(tag => (
+          <span
+            key={tag}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '999px',
+              fontSize: '11px',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: 'var(--color-primary)'
+            }}
           >
-            {project.location && (
-              <div>
-                <p className="tag" style={{ color: 'var(--color-text-muted)', fontSize: '11px', marginBottom: '4px' }}>Location</p>
-                <p style={{ fontWeight: 500 }}>{project.location}</p>
-              </div>
-            )}
-            {project.type && (
-              <div>
-                <p className="tag" style={{ color: 'var(--color-text-muted)', fontSize: '11px', marginBottom: '4px' }}>Type</p>
-                <p style={{ fontWeight: 500 }}>{project.type}</p>
-              </div>
-            )}
-            {project.size && (
-              <div>
-                <p className="tag" style={{ color: 'var(--color-text-muted)', fontSize: '11px', marginBottom: '4px' }}>Size</p>
-                <p style={{ fontWeight: 500 }}>{project.size}</p>
-              </div>
-            )}
-            {project.duration && (
-              <div>
-                <p className="tag" style={{ color: 'var(--color-text-muted)', fontSize: '11px', marginBottom: '4px' }}>Duration</p>
-                <p style={{ fontWeight: 500 }}>{project.duration}</p>
-              </div>
-            )}
-            {project.year && (
-              <div>
-                <p className="tag" style={{ color: 'var(--color-text-muted)', fontSize: '11px', marginBottom: '4px' }}>Year</p>
-                <p style={{ fontWeight: 500 }}>{project.year}</p>
-              </div>
-            )}
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </motion.div>
+       {/* Gallery */}
+{project.galleryImages.length > 0 && (
+  <div style={{ marginTop: '140px' }}>
+    <h3
+      className="subheading"
+      style={{
+        fontSize: '36px',
+        marginBottom: '56px',
+        textAlign: 'center',
+        fontStyle: 'italic'
+      }}
+    >
+      Gallery
+    </h3>
 
-            {project.tags.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px' }}>
-                {project.tags.map(tag => (
-                  <span key={tag} style={{ padding: '6px 12px', border: '1px solid var(--color-primary)', borderRadius: '99px', fontSize: '12px', color: 'var(--color-primary)' }}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </motion.div>
-
-          {/* Description */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="subheading" style={{ fontSize: '32px', marginBottom: '24px', color: 'var(--color-primary)' }}>The Vision</h2>
-            <p style={{ fontSize: '18px', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
-              {project.description}
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Gallery */}
-        {project.galleryImages.length > 0 && (
-          <div style={{ marginTop: '120px' }}>
-            <h3 className="subheading" style={{ fontSize: '32px', marginBottom: '48px', textAlign: 'center', fontStyle: 'italic' }}>Gallery</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '28px' }}>
-              {project.galleryImages.map((img, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: (idx % 3) * 0.12, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ overflow: 'hidden' }}
-                >
-                  <motion.img
-                    src={img}
-                    alt={`${project.name} gallery ${idx + 1}`}
-                    whileHover={{ scale: 1.04 }}
-                    transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ width: '100%', height: idx % 3 === 1 ? '480px' : '380px', objectFit: 'cover', display: 'block' }}
-                    loading="lazy"
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        )}
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(480px, 1fr))',
+        gap: '36px'
+      }}
+    >
+      {project.galleryImages.map((img, idx) => (
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{
+            delay: (idx % 3) * 0.12,
+            duration: 0.7,
+            ease: [0.22, 1, 0.36, 1]
+          }}
+          style={{
+            overflow: 'hidden',
+            borderRadius: '20px'
+          }}
+        >
+          <motion.img
+            src={img}
+            alt={`${project.name} gallery ${idx + 1}`}
+            whileHover={{ scale: 1.05 }}
+            transition={{
+              duration: 0.75,
+              ease: [0.22, 1, 0.36, 1]
+            }}
+            style={{
+              width: '100%',
+              height: idx % 3 === 1 ? '680px' : '560px',
+              objectFit: 'cover',
+              display: 'block'
+            }}
+            loading="lazy"
+          />
+        </motion.div>
+      ))}
+    </div>
+  </div>
+)}
 
         {/* Next Project */}
         {nextSlug && nextSlug !== project.slug && (

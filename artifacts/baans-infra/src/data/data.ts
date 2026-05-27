@@ -82,14 +82,73 @@ export const footerRegions = [
 export const navLinks = [
   { label: "Home", path: "/" },
   { label: "Projects", path: "/projects" },
+  { label: "Blogs", path: "/blogs" },
   { label: "About", path: "/about" },
   { label: "Contact", path: "/contact" }
 ]
 
+export const featuredOnFallback = [
+  {
+    title: "The rise of bamboo hospitality in India",
+    publication: "Design India",
+    category: "Magazine",
+    url: "#",
+    logo_url: "",
+    excerpt: "A profile on BAANS INFRA's approach to durable, design-led bamboo architecture.",
+    published_at: "2025-01-15",
+    order: 1,
+  },
+  {
+    title: "Sustainable resorts are choosing engineered bamboo",
+    publication: "Hospitality Build",
+    category: "Trade Paper",
+    url: "#",
+    logo_url: "",
+    excerpt: "Coverage of fast-build eco luxury projects across India.",
+    published_at: "2025-03-08",
+    order: 2,
+  },
+  {
+    title: "Material futures: bamboo beyond decor",
+    publication: "Architecture Today",
+    category: "Editorial",
+    url: "#",
+    logo_url: "",
+    excerpt: "An editorial on structural bamboo and climate-responsive construction.",
+    published_at: "2025-05-22",
+    order: 3,
+  },
+]
+
+export const blogFallback = [
+  {
+    slug: "why-bamboo-is-ready-for-luxury-resorts",
+    title: "Why Bamboo Is Ready for Luxury Resorts",
+    excerpt: "Bamboo can be expressive, fast to build, and engineered for hospitality-grade durability when the process is handled correctly.",
+    content: "Bamboo has moved far beyond decorative pergolas. With careful species selection, borax treatment, engineered joinery, and weather-aware detailing, it becomes a serious structural material for resorts, villas, pavilions, and wellness spaces.\n\nFor developers, the advantage is not only ecological. Bamboo structures create a strong guest memory, reduce heavy wet construction on sensitive sites, and can move from concept to handover faster than conventional builds.\n\nThe key is execution. A bamboo project needs early coordination between design, sourcing, treatment, joinery, foundation strategy, and maintenance planning. When those pieces are aligned, the result feels light, durable, and deeply rooted in place.",
+    cover_image: "/samples/1.jpg",
+    author: "BAANS INFRA Studio",
+    category: "Material Insight",
+    published_at: "2025-04-18",
+    is_published: true,
+  },
+  {
+    slug: "building-pan-india-with-local-climate-in-mind",
+    title: "Building PAN India With Local Climate in Mind",
+    excerpt: "From Goa's salt air to Rajasthan's dry heat, bamboo architecture succeeds when detailing responds to the exact terrain.",
+    content: "PAN India bamboo work is never one-size-fits-all. Coastal projects need stronger moisture strategy, hill projects need careful anchoring and drainage, and dry regions need shading and thermal comfort as first principles.\n\nAt BAANS INFRA, each project begins with the site: rainfall, wind, soil, access, hospitality use case, and maintenance capacity. Bamboo adapts beautifully, but it must be detailed with respect.\n\nThat local intelligence is what allows bamboo to become a long-term architectural system rather than a temporary aesthetic.",
+    cover_image: "/samples/2.jpg",
+    author: "BAANS INFRA Studio",
+    category: "Execution",
+    published_at: "2025-06-02",
+    is_published: true,
+  },
+]
+
 export const whyBambooReasons = [
-  { number: "01", heading: "Grows Back in 3 Years", body: "Unlike timber that takes 30+ years to mature, bamboo regenerates within 3 years. Every culm we cut is replaced without uprooting the plant." },
-  { number: "02", heading: "Stronger Than Steel", body: "Bamboo's tensile strength rivals structural steel. It flexes under load without breaking — making it ideal for seismic zones and coastal structures." },
-  { number: "03", heading: "Carbon Negative", body: "A single bamboo grove absorbs more CO₂ than it emits across its entire lifecycle. Building with bamboo is the most direct act of carbon sequestration in construction." },
+  { number: "01", heading: "10+ Years of Bamboo Execution", body: "A specialist team with deep bamboo design, treatment, joinery, and on-site construction experience across hospitality and private projects." },
+  { number: "02", heading: "PAN India Delivery Network", body: "We build across coasts, hills, forests, and dry regions with climate-specific detailing, sourcing, and site execution planning." },
+  { number: "03", heading: "Treatment-Led Durability", body: "Every structure starts with selected bamboo, borax treatment, engineered joinery, and maintenance guidance for long-term performance." },
   { number: "04", heading: "Works Everywhere in India", body: "From the humid coasts of Goa to the dry heat of Rajasthan and the misty hills of the Northeast — bamboo adapts to every Indian terrain, climate, and aesthetic." },
   { number: "05", heading: "Builds in Months, Not Years", body: "A fully operational bamboo resort can be completed in 1 to 8 months. No curing time. No delays from concrete setting. Just skilled hands and a living material." },
   { number: "06", heading: "Naturally Protected", body: "Our proprietary fire-treatment and Borax-based insect-resistance process gives every structure a 25+ year lifecycle. Nature's material, engineered to last." }
@@ -275,7 +334,7 @@ export const aboutContent = {
   stats: [
     { label: "Projects Completed", value: "50+" },
     { label: "Years of Craft", value: "10+" },
-    { label: "States Across India", value: "8" },
+    { label: "States Across India", value: "8+" },
     { label: "Community Members", value: "22K" }
   ],
   team: [

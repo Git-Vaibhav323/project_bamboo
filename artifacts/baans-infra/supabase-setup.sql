@@ -178,6 +178,103 @@ CREATE TRIGGER set_updated_at
 
 
 -- =====================================================
+-- 4A. FEATURED ON / MEDIA FEATURES TABLE
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.media_features (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title TEXT NOT NULL,
+    publication TEXT NOT NULL,
+    category TEXT DEFAULT '',
+    url TEXT DEFAULT '',
+    logo_url TEXT DEFAULT '',
+    excerpt TEXT DEFAULT '',
+    published_at DATE,
+    "order" INTEGER DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_media_features_order ON public.media_features("order");
+
+ALTER TABLE public.media_features ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to media features"          ON public.media_features;
+DROP POLICY IF EXISTS "Allow authenticated users to insert media features"  ON public.media_features;
+DROP POLICY IF EXISTS "Allow authenticated users to update media features"  ON public.media_features;
+DROP POLICY IF EXISTS "Allow authenticated users to delete media features"  ON public.media_features;
+
+CREATE POLICY "Allow public read access to media features"
+    ON public.media_features FOR SELECT TO public USING (true);
+
+CREATE POLICY "Allow authenticated users to insert media features"
+    ON public.media_features FOR INSERT TO authenticated WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to update media features"
+    ON public.media_features FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to delete media features"
+    ON public.media_features FOR DELETE TO authenticated USING (true);
+
+DROP TRIGGER IF EXISTS set_updated_at ON public.media_features;
+CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON public.media_features
+    FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+
+-- =====================================================
+-- 4B. BLOGS TABLE
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.blogs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    slug TEXT UNIQUE NOT NULL,
+    title TEXT NOT NULL,
+    excerpt TEXT NOT NULL,
+    content TEXT NOT NULL,
+    cover_image TEXT DEFAULT '',
+    author TEXT DEFAULT 'BAANS INFRA Studio',
+    category TEXT DEFAULT '',
+    published_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()),
+    is_published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_blogs_slug ON public.blogs(slug);
+CREATE INDEX IF NOT EXISTS idx_blogs_published_at ON public.blogs(published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_blogs_is_published ON public.blogs(is_published);
+
+ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to published blogs" ON public.blogs;
+DROP POLICY IF EXISTS "Allow authenticated users to read all blogs" ON public.blogs;
+DROP POLICY IF EXISTS "Allow authenticated users to insert blogs"   ON public.blogs;
+DROP POLICY IF EXISTS "Allow authenticated users to update blogs"   ON public.blogs;
+DROP POLICY IF EXISTS "Allow authenticated users to delete blogs"   ON public.blogs;
+
+CREATE POLICY "Allow public read access to published blogs"
+    ON public.blogs FOR SELECT TO public USING (is_published = true);
+
+CREATE POLICY "Allow authenticated users to read all blogs"
+    ON public.blogs FOR SELECT TO authenticated USING (true);
+
+CREATE POLICY "Allow authenticated users to insert blogs"
+    ON public.blogs FOR INSERT TO authenticated WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to update blogs"
+    ON public.blogs FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to delete blogs"
+    ON public.blogs FOR DELETE TO authenticated USING (true);
+
+DROP TRIGGER IF EXISTS set_updated_at ON public.blogs;
+CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON public.blogs
+    FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+
+-- =====================================================
 -- 5. STORAGE BUCKETS
 -- =====================================================
 -- Create these manually in Supabase Dashboard > Storage:

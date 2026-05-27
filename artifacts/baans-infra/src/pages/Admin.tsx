@@ -164,6 +164,20 @@ export default function Admin() {
               <p style={{ color: 'var(--color-text-muted)' }}>View and manage contact form submissions</p>
             </motion.div>
           </Link>
+
+          <Link href="/admin/features">
+            <motion.div whileHover={{ scale: 1.02 }} style={{ backgroundColor: 'var(--color-ivory)', padding: '32px', borderRadius: '8px', cursor: 'pointer' }}>
+              <h2 style={{ fontSize: '24px', marginBottom: '12px', color: 'var(--color-text)' }}>Featured On</h2>
+              <p style={{ color: 'var(--color-text-muted)' }}>Add, edit, or remove press, paper, and magazine features</p>
+            </motion.div>
+          </Link>
+
+          <Link href="/admin/blogs">
+            <motion.div whileHover={{ scale: 1.02 }} style={{ backgroundColor: 'var(--color-ivory)', padding: '32px', borderRadius: '8px', cursor: 'pointer' }}>
+              <h2 style={{ fontSize: '24px', marginBottom: '12px', color: 'var(--color-text)' }}>Manage Blogs</h2>
+              <p style={{ color: 'var(--color-text-muted)' }}>Publish and update journal articles</p>
+            </motion.div>
+          </Link>
         </div>
       </div>
     </div>
