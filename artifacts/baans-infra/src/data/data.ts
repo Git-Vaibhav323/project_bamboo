@@ -6,7 +6,7 @@ export const siteConfig = {
   email: "hello@baansinfra.com",
   phone: "+91 98765 43210",
   address: "Mumbai, Maharashtra, India",
-  socialLinks: { instagram: "#", linkedin: "#" },
+  socialLinks: { instagram: "https://www.instagram.com/baansinfra/", linkedin: "https://www.linkedin.com/company/baans-infra/" },
   hours: "Mon – Sat, 9:00 AM – 6:00 PM IST",
   founded: "2014",
 }

@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "wouter";
+import React, { useCallback } from "react";
+import { Link, useLocation } from "wouter";
 import {
   siteConfig,
   navLinks,
@@ -11,6 +11,47 @@ import LazyImage from "./LazyImage";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const [, navigate] = useLocation();
+
+  // Handles both plain page links and hash-anchor links.
+  // For same-page anchors (e.g. /#explore-structure) it navigates to "/" first
+  // if needed, then scrolls to the element after a short delay.
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      e.preventDefault();
+
+      const hashIndex = href.indexOf("#");
+
+      if (hashIndex === -1) {
+        // Plain page link — navigate and scroll to top
+        navigate(href);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      const pagePart = href.slice(0, hashIndex) || "/";
+      const sectionId = href.slice(hashIndex + 1);
+
+      const scrollToSection = () => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      };
+
+      const currentPath = window.location.pathname;
+
+      if (currentPath === pagePart || pagePart === "/") {
+        // Already on the right page — just scroll
+        scrollToSection();
+      } else {
+        // Navigate to the page first, then scroll once it renders
+        navigate(pagePart);
+        setTimeout(scrollToSection, 400);
+      }
+    },
+    [navigate]
+  );
 
   return (
     <footer className="site-footer">
@@ -72,11 +113,20 @@ export default function Footer() {
             <h4 className="site-footer-heading site-footer-heading--sub">Navigate</h4>
             <nav className="site-footer-links" aria-label="Footer navigation">
               {navLinks.map((link) => (
-                <Link key={link.path} href={link.path}>
+                <a
+                  key={link.path}
+                  href={link.path}
+                  onClick={(e) => handleNavClick(e, link.path)}
+                >
                   {link.label}
-                </Link>
+                </a>
               ))}
-              <Link href="/#explore-structure">3D Structure Tour</Link>
+              <a
+                href="/#explore-structure"
+                onClick={(e) => handleNavClick(e, "/#explore-structure")}
+              >
+                3D Structure Tour
+              </a>
             </nav>
           </div>
 
