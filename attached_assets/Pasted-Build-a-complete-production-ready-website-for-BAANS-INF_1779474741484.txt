@@ -1,0 +1,261 @@
+Build a complete, production-ready website for BAANS INFRA — India's leading bamboo construction and design company. They build luxury bamboo resorts, Bali-style villas, mud & rammed earth constructions, pavilions, cafes, and premium stays across India.
+
+---
+
+## TECH STACK
+- React + Vite
+- React Router DOM for multi-page routing
+- Plain CSS (no Tailwind) — write custom CSS with CSS variables
+- No UI libraries. Every component hand-crafted.
+- Framer Motion for all scroll animations and transitions
+- GSAP for the hero scroll-scrub frame animation
+- Use a central `src/data/data.ts` file for ALL site content — nothing hardcoded into pages. Every text, image path, project detail, testimonial, process step, FAQ, nav link — everything lives in data.ts and is imported into components.
+
+---
+
+## PAGES (with React Router)
+1. `/` — Home
+2. `/projects` — All Projects
+3. `/projects/:slug` — Project Detail
+4. `/about` — About Us
+5. `/contact` — Contact
+
+---
+
+## FONTS (import from Google Fonts)
+- Headlines: `Playfair Display` — bold, italic where needed, large sizes
+- Subheadings: `Cormorant Garamond` — elegant, medium weight
+- Body / UI text: `DM Sans` — clean, modern, readable
+- Accent / label text: `Karla` — small caps style for labels and tags
+
+---
+
+## COLOR PALETTE (CSS variables in :root)
+--color-bg: #F5F0E8          /* warm ivory — main background */
+--color-bg-dark: #1C1F1A     /* deep forest night — dark sections */
+--color-primary: #3B5E3A     /* forest green */
+--color-primary-light: #6B8F4E /* sage green */
+--color-accent: #C9A84C      /* bamboo gold / warm yellow */
+--color-earth: #8B5E3C       /* terracotta brown */
+--color-text: #1C1F1A        /* near black */
+--color-text-muted: #6B6B5E  /* warm grey */
+--color-ivory: #FAF7F2       /* section alternate bg */
+--color-leaf: #A8C5A0        /* light sage for tags/badges */
+
+---
+
+## GLOBAL STYLES
+- Custom cursor: a small filled circle (12px, --color-primary) that follows the mouse smoothly with a trailing larger ring (28px, semi-transparent). On hover over links/buttons, the inner dot scales up and changes to --color-accent. The cursor should feel organic, not mechanical.
+- Smooth scroll: `scroll-behavior: smooth` on html
+- All images: `border-radius: 16px` by default, some hero/full-bleed images have `border-radius: 24px`
+- Section scroll animations: every card, image, heading fades up with `opacity: 0 → 1` and `translateY: 40px → 0` on entering viewport. Use Framer Motion's `whileInView` with `viewport: { once: true, amount: 0.2 }`. Stagger children by 0.12s.
+- No section should feel harsh or technical. Every transition must feel like nature breathing.
+
+---
+
+## NAVIGATION
+- Fixed top, fully transparent background initially
+- On scroll past 80px: background becomes `rgba(28, 31, 26, 0.85)` with `backdrop-filter: blur(12px)`
+- Logo: text "BAANS INFRA" in Playfair Display, color ivory when scrolled, dark when at top on light hero
+- Nav links: Karla font, letter-spacing: 0.12em, uppercase, small size (13px)
+- Links: Home, Projects, About, Contact
+- A CTA button: "Start Your Project" — pill shape, border: 1px solid --color-accent, text --color-accent. On hover: fills with --color-accent, text dark.
+- Mobile: hamburger menu, full screen overlay in --color-bg-dark with links stacking vertically
+
+---
+
+## HOME PAGE SECTIONS
+
+### 1. HERO SECTION — Scroll Scrub Frame Animation
+- Full viewport height × 5 (500vh) sticky scroll container
+- The inner content is `position: sticky; top: 0; height: 100vh`
+- 60 sequential JPG frames named: `ezgif-frame-001.jpg` to `ezgif-frame-060.jpg` stored in `public/frames/`
+- On page load: preload all 60 frames using JS Image() objects
+- Frame logic: as user scrolls from 0 to 500vh, map scroll progress (0–1) to frame index (1–60). Round to nearest integer. Display the corresponding frame as a full-bleed background image (`object-fit: cover`, `width: 100%`, `height: 100%`).
+- Scrolling DOWN = frame index increases (house builds up frame by frame)
+- Scrolling UP = frame index decreases (house deconstructs)
+- Use `requestAnimationFrame` for buttery smooth updates
+- Over the frame canvas, show centered hero text that fades out after 20% scroll progress:
+  - Small label (Karla, uppercase, --color-accent): "BAMBOO. CRAFTED. ALIVE."
+  - Giant headline (Playfair Display, 96px desktop / 48px mobile, ivory, bold): "We Build With\nNature's Strongest Material."
+  - Subtext (Cormorant Garamond, 22px, ivory/80%): "Luxury bamboo resorts, villas & pavilions — built across India."
+  - A scroll indicator: animated downward arrow, ivory, pulses gently
+
+### 2. HERO SEPARATOR — Artistic Organic Division
+- Immediately after the sticky hero scroll container ends
+- An SVG wave/organic shape separator — NOT a simple wave. Make it look like bamboo stalks or a forest canopy silhouette cut into the section below. Dark forest green (#3B5E3A) shape on ivory background. Height: 120px. Full width.
+- Below the SVG shape, in tiny Karla uppercase centered text (--color-text-muted): "SCROLL TO DISCOVER WHAT BAMBOO CAN BECOME"
+
+### 3. STATEMENT SECTION — Giant Image + Bold Message
+- Two-column layout (60/40 split), alternating on mobile to stacked
+- Left: one giant project image, border-radius: 24px, slight box-shadow, image fills full column height
+- Right: vertically centered content:
+  - Small tag label (Karla, --color-primary-light, uppercase): "ONE MATERIAL. INFINITE FORMS."
+  - Giant headline (Playfair Display, 72px): "Not just a structure.\nA feeling."
+  - Body (DM Sans, 18px, --color-text-muted): "BAANS INFRA has spent over a decade mastering bamboo — designing and building spaces that don't just stand, but breathe. From the coasts of Goa to the hills of the north, our structures carry the warmth of the earth and the strength of India's most sustainable material."
+  - A text link: "See Our Work →" in --color-primary, underline on hover
+
+### 4. MARQUEE STRIP — Tiny Scrolling Message
+- Full-width horizontal auto-scrolling ticker strip
+- Background: --color-primary (forest green)
+- Text (Karla, ivory, uppercase, letter-spacing 0.2em, 13px): repeat the phrase — "BAMBOO CONSTRUCTION  ·  BALI-INSPIRED VILLAS  ·  ECO RESORTS  ·  RAMMED EARTH  ·  PAN-INDIA BUILDS  ·  LUXURY THAT BREATHES  ·  " — looping infinitely left
+- Height: 48px, centered vertically
+- CSS animation `@keyframes marquee` using `translateX`
+
+### 5. WHY BAMBOO SECTION
+- Background: --color-bg-dark (deep forest)
+- Top: centered label + headline:
+  - Label (Karla, --color-accent): "THE MATERIAL"
+  - Headline (Playfair Display, 64px, ivory): "Why Bamboo?"
+  - Subtext (Cormorant Garamond, 20px, ivory/70%): "Every structure we build starts with one question — why bamboo? Here's what a decade of building has taught us."
+- Below: a 3-column card grid (stacks to 1 on mobile)
+- Each card: dark card bg (#2A2D27), border-radius: 20px, padding: 40px, a large numeral (Playfair Display, 72px, --color-accent, opacity 0.3) top left, then icon (SVG leaf/bamboo/globe/etc.), then bold heading (Playfair Display, 24px, ivory), then body (DM Sans, 15px, ivory/70%)
+- 6 cards with these reasons (all from data.ts):
+  1. Grows back in 3 years (vs 30 for timber)
+  2. Stronger than steel in tensile strength
+  3. Carbon negative — absorbs more CO₂ than it emits
+  4. Works in every Indian terrain — coast, desert, hills
+  5. Builds faster — 1 to 8 months, not years
+  6. Naturally fire-treated, insect-resistant with our process
+- Scroll animation: cards stagger in from below
+
+### 6. PROJECTS PREVIEW SECTION
+- Background: --color-ivory
+- Label + Headline centered:
+  - Label (Karla, --color-primary): "PORTFOLIO"
+  - Headline (Playfair Display, 64px): "Spaces That\nStay With You."
+- Below: a 2-column masonry-style grid of project cards (up to 4 shown, rest on /projects page)
+- Each project card:
+  - Large image (border-radius: 20px), full width of column
+  - On hover: image scales 1.04, a dark overlay appears with project name + location + a "View Project →" link
+  - Below image: project name (Playfair Display, 22px), location (Karla, --color-text-muted, uppercase, 12px), type tag (pill badge, --color-leaf bg, --color-primary text)
+- "View All Projects →" CTA button centered below grid, outlined style
+
+### 7. PROCESS SECTION
+- Background: --color-bg (ivory)
+- Full-width layout with a vertical timeline feel on desktop, stacked on mobile
+- Label + Headline:
+  - Label (Karla, --color-primary-light): "HOW WE BUILD"
+  - Headline (Playfair Display, 64px): "From an idea\nto opening day."
+  - Subtext (Cormorant Garamond, 20px): "What actually happens between 'I want to build a bamboo resort' and the day you hand guests the keys."
+- 5 process steps, each with:
+  - Step number (Playfair Display, 96px, --color-accent, opacity 0.15, absolute positioned behind)
+  - Step title (Playfair Display, 28px, --color-text)
+  - Description (DM Sans, 16px, --color-text-muted)
+  - Timeline duration badge (Karla pill, --color-primary bg, ivory text)
+- Steps (from data.ts):
+  1. Discovery Call — "We understand your land, vision, budget and timeline." — Week 1
+  2. Design & Concept — "Our team creates bamboo-specific architectural designs inspired by your brief." — Weeks 2–4
+  3. Material Sourcing — "We source and treat bamboo from certified farms across India." — Weeks 4–6
+  4. Construction — "Our trained craftsmen build on-site. Fast, precise, no compromise." — 1–6 Months
+  5. Handover & Support — "We hand over a living structure and stay available for aftercare." — Ongoing
+
+### 8. GALLERY SECTION
+- Background: --color-bg-dark
+- Label + Headline:
+  - Label (Karla, --color-accent): "THE WORK"
+  - Headline (Playfair Display, 64px, ivory): "Built. Not\nRendered."
+- A 3-column masonry image grid with varying heights. Images from `public/gallery/` folder.
+- All images have border-radius: 16px
+- On hover: slight brightness increase + scale 1.03 with smooth transition
+- Images load with a blur-up placeholder effect
+
+### 9. TESTIMONIALS SECTION
+- Background: --color-ivory
+- Label + Headline:
+  - Label (Karla, --color-primary): "WHAT CLIENTS SAY"
+  - Headline (Playfair Display, 56px): "Words from\nthe people we built for."
+- Horizontal scroll carousel — no arrows, drag/swipe to scroll, with a subtle scroll hint shadow on edges
+- Each testimonial card:
+  - Large opening quote mark (Playfair Display, 96px, --color-accent, opacity 0.2)
+  - Quote text (Cormorant Garamond, 22px, italic, --color-text)
+  - Client name (Karla, uppercase, 12px, --color-primary)
+  - Project type + location (DM Sans, 13px, --color-text-muted)
+  - A 5-star row (SVG stars, --color-accent)
+
+### 10. CONTACT SECTION (Home page teaser)
+- Background: full-bleed dark image (public/contact-bg.jpg) with dark overlay
+- Centered content:
+  - Headline (Playfair Display, 72px, ivory): "You have land.\nWe have ideas."
+  - Subtext (Cormorant Garamond, 22px, ivory/80%): "Tell us your vision and we'll tell you what's possible."
+  - CTA button: "Start a Conversation →" — large pill, --color-accent bg, dark text, hover lifts with shadow
+
+---
+
+## PROJECTS PAGE (/projects)
+- Hero: full-width banner with headline "Every Structure Has a Story." — Playfair Display, 72px, ivory over a dark image overlay
+- Filter tabs (Karla, pill style): All / Resorts / Villas / Pavilions & Commercial / Rammed Earth
+- Masonry grid of all project cards (same card style as homepage preview)
+- All project data from data.ts
+
+## PROJECT DETAIL PAGE (/projects/:slug)
+- Full-bleed hero image, project name overlaid in large Playfair Display
+- Below: two-column — left: project stats (location, type, size, duration, year) in a clean DM Sans table; right: project description paragraphs
+- Below that: full-width image gallery grid (3 columns) of project photos from `public/projects/[slug]/` folder
+- A "Next Project →" navigation at the bottom
+- All content from data.ts
+
+## ABOUT PAGE (/about)
+- Hero: large text "We started BAANS INFRA with one belief..." fades into "...that nature builds better than concrete."
+- Story section: alternating image + text rows, telling the brand's journey
+- Values grid: 3 cards — Craft, Sustainability, Permanence
+- Team section (if team data exists in data.ts, else a single founder card)
+- Stats bar: animated counters — 50+ Projects | 10+ Years | 8 States | 22K Community
+- Ends with a CTA to /contact
+
+## CONTACT PAGE (/contact)
+- Clean, calm layout. Background: --color-bg
+- Left column: 
+  - Headline (Playfair Display, 56px): "Let's build\nsomething real."
+  - Subtext (Cormorant Garamond, 20px)
+  - Contact info: email, phone (from data.ts)
+  - A small embedded Google Maps placeholder div (just a styled box with a map pin SVG, actual embed requires API key)
+- Right column: contact form with fields:
+  - Full Name (text input)
+  - Email (email input)
+  - Phone (tel input)
+  - Project Type (select: Resort / Villa / Pavilion / Commercial / Other)
+  - State / Location (text input)
+  - Tell us about your vision (textarea, 5 rows)
+  - Submit button: "Send My Vision →" — full width, --color-primary bg, ivory text
+- All inputs styled with: bottom border only (no full border box), --color-primary focus color, DM Sans font, large padding
+- Form has basic HTML5 validation
+- On submit: show a success message with a leaf animation
+
+---
+
+## FOOTER
+- Background: --color-bg-dark
+- Logo top left, tagline below: "Building with nature. Since 2014."
+- 4 columns: Quick Links | Our Work | Contact | Follow Us
+- Bottom bar: "© 2025 BAANS INFRA. Crafted with bamboo & code." — centered, Karla, small
+- Social icons: Instagram, LinkedIn (SVG icons, --color-accent on hover)
+- A subtle bamboo stalk SVG illustration in the footer background, very low opacity
+
+---
+
+## data.ts STRUCTURE
+Create `src/data/data.ts` with full TypeScript interfaces and exported objects for:
+
+```typescript
+export const siteConfig = { name, tagline, email, phone, address, socialLinks }
+export const navLinks = [ { label, path } ]
+export const heroContent = { label, headline, subtext }
+export const statementSection = { tag, headline, body, image, cta }
+export const whyBambooReasons = [ { number, icon, heading, body } ]
+export const projects = [ { 
+  slug, name, location, state, type, year, duration, size, 
+  description, coverImage, galleryImages: [], tags: []
+} ]
+export const processSteps = [ { number, title, description, duration } ]
+export const galleryImages = [ { src, alt } ]
+export const testimonials = [ { quote, clientName, projectType, location, stars } ]
+export const aboutContent = { story, values, stats, team }
+export const contactContent = { headline, subtext, email, phone }
+```
+
+Fill ALL fields with realistic, well-written content for Baans Infra. Do not use "Lorem Ipsum" anywhere.
+
+---
+
+## IMAGE FOLDER STRUCTURE (in /public)
