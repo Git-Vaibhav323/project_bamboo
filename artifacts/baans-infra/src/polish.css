@@ -1,0 +1,1089 @@
+/* ============================================================
+   BAANS INFRA — Visual Polish Pass
+   Pure CSS/animation layer. No layout changes.
+   All animations wrapped in prefers-reduced-motion.
+   ============================================================ */
+
+/* ── Easing tokens ─────────────────────────────────────────── */
+:root {
+  --ease-organic:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-reveal:   cubic-bezier(0.22, 1, 0.36, 1);
+  --gold:          #8B6914;
+  --gold-light:    #C9A84C;
+}
+
+/* ============================================================
+   1. GLOBAL TYPOGRAPHY REFINEMENTS
+   ============================================================ */
+
+/* Uppercase labels — minimum 0.2em spacing */
+.tag,
+.section-label,
+.card-overlay-location,
+.project-location,
+.card-overlay-link,
+.process-step-tag,
+.site-footer-heading,
+.site-footer-hours-label {
+  letter-spacing: 0.22em;
+}
+
+/* Decorative italic headings — never bold-italic */
+h2.subheading,
+.heading-display,
+.sketchfab-sub,
+.section-featured-sub,
+.feeling-intro,
+.hero-subtext {
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Body text — luxurious line-height everywhere */
+p,
+.feeling-card-body,
+.why-feature-copy p,
+.sketchfab-desc,
+.site-footer-about,
+.site-footer-founder,
+.site-footer-vision,
+.site-footer-closing {
+  line-height: 1.8;
+}
+
+/* Tabular numbers for counters */
+.site-footer-stat-value,
+[id^="counter-"] > div:first-child {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   2. NAVIGATION — animated underline from center
+   ============================================================ */
+
+/* Navbar is now fixed — compensate on non-hero pages */
+body > #root > div > main > div:not([style*="paddingTop"]) {
+  padding-top: 0;
+}
+
+/* Ensure pages that don't have their own paddingTop get the navbar offset */
+.page-with-navbar {
+  padding-top: 100px;
+}
+
+.nav-link-text::after {
+  transform-origin: center;
+  transform: scaleX(0);
+  width: 100%;
+  transition: transform 0.3s var(--ease-organic);
+}
+
+.nav-link-text:hover::after,
+.nav-link-text--active::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-link-text {
+    transition: color 0.25s ease, transform 0.2s ease;
+  }
+  .nav-link-text:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* ============================================================
+   3. LOADING SCREEN — horizontal bamboo stalk
+   ============================================================ */
+
+/* Handled entirely in LoadingScreen.tsx */
+
+/* ============================================================
+   4. PROJECTS PAGE
+   ============================================================ */
+
+/* Hero Ken Burns */
+@media (prefers-reduced-motion: no-preference) {
+  .projects-page-hero,
+  [style*="72vh"][style*="projecthero"] {
+    animation: kenBurns 9s var(--ease-organic) forwards;
+  }
+}
+
+@keyframes kenBurns {
+  from { background-size: 108%; }
+  to   { background-size: 100%; }
+}
+
+/* Hero label fade-in-up */
+@media (prefers-reduced-motion: no-preference) {
+  .projects-hero-label {
+    animation: fadeInUp 0.7s var(--ease-reveal) 0.2s both;
+  }
+  .projects-hero-title {
+    animation: fadeInUp 0.8s var(--ease-reveal) 0.38s both;
+  }
+}
+
+/* Filter buttons — springy hover lift */
+@media (prefers-reduced-motion: no-preference) {
+  .filter-pill-btn {
+    transition:
+      transform 0.25s var(--ease-spring),
+      background 0.3s var(--ease-organic),
+      color 0.3s var(--ease-organic),
+      border-color 0.3s var(--ease-organic),
+      box-shadow 0.3s var(--ease-organic);
+  }
+  .filter-pill-btn:hover {
+    transform: translateY(-2px);
+  }
+  /* Active pulse ring */
+  .filter-pill-btn--active {
+    box-shadow: inset 0 0 0 2px var(--color-primary), 0 0 0 0 rgba(123,79,42,0);
+    animation: activePulse 0.4s var(--ease-spring) both;
+  }
+}
+
+@keyframes activePulse {
+  0%   { box-shadow: inset 0 0 0 2px var(--color-primary), 0 0 0 6px rgba(123,79,42,0.18); }
+  100% { box-shadow: inset 0 0 0 2px var(--color-primary), 0 0 0 0 rgba(123,79,42,0); }
+}
+
+/* Project card — overlay slides up on hover */
+.card-image-overlay {
+  transform: translateY(14px);
+  opacity: 0.82;
+  transition:
+    transform 0.5s var(--ease-organic),
+    opacity 0.5s var(--ease-organic);
+}
+
+.image-card-pop:hover .card-image-overlay,
+.image-card-pop:focus-visible .card-image-overlay {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Card — thin golden border trace on hover */
+.image-card-pop {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .image-card-pop::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(139,105,20,0);
+    pointer-events: none;
+    transition: border-color 0.45s var(--ease-organic);
+    z-index: 10;
+  }
+  .image-card-pop:hover::after {
+    border-color: rgba(139,105,20,0.55);
+  }
+}
+
+/* Location tag — decorative line before */
+.card-overlay-location::before,
+.project-location::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+  vertical-align: middle;
+  margin-right: 8px;
+  margin-bottom: 2px;
+}
+
+/* Card scroll-entrance — handled via .card-enter class added by JS hook */
+@media (prefers-reduced-motion: no-preference) {
+  .card-enter {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 0.7s var(--ease-reveal),
+      transform 0.7s var(--ease-reveal);
+  }
+  .card-enter.card-enter--visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   5. ABOUT PAGE
+   ============================================================ */
+
+/* Hero Ken Burns */
+@media (prefers-reduced-motion: no-preference) {
+  .about-page-hero {
+    animation: kenBurns 9s var(--ease-organic) forwards;
+  }
+}
+
+/* Story paragraph reveal */
+@media (prefers-reduced-motion: no-preference) {
+  .about-story-text {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s var(--ease-organic), transform 0.6s var(--ease-organic);
+  }
+  .about-story-text.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* BAANS INFRA inline highlight */
+.about-story-text strong {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+}
+
+/* Stats — golden top border per stat */
+@media (prefers-reduced-motion: no-preference) {
+  [id^="counter-"] {
+    position: relative;
+    padding-top: 24px;
+  }
+  [id^="counter-"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 48px;
+    height: 1px;
+    background: var(--gold);
+    transition: transform 0.6s var(--ease-reveal);
+  }
+  [id^="counter-"].is-visible::before {
+    transform: translateX(-50%) scaleX(1);
+  }
+}
+
+/* Values cards — golden left border slides in on hover */
+@media (prefers-reduced-motion: no-preference) {
+  .values-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+      transform 0.4s var(--ease-organic),
+      box-shadow 0.4s var(--ease-organic);
+  }
+  .values-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: var(--gold);
+    transition: height 0.4s var(--ease-organic);
+    border-radius: 0 0 2px 2px;
+  }
+  .values-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+  }
+  .values-card:hover::before {
+    height: 100%;
+  }
+  .values-card:hover h3 {
+    color: var(--gold) !important;
+    transition: color 0.25s ease;
+  }
+}
+
+/* Team cards — hover lift + golden border on image */
+@media (prefers-reduced-motion: no-preference) {
+  .team-card {
+    transition:
+      transform 0.45s var(--ease-organic),
+      box-shadow 0.45s var(--ease-organic);
+  }
+  .team-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+  }
+  .team-card img {
+    transition: border-color 0.35s ease;
+    border: 1px solid transparent;
+  }
+  .team-card:hover img {
+    border-color: rgba(139,105,20,0.5);
+  }
+}
+
+/* Team member name — gold shimmer sweep on hover */
+@media (prefers-reduced-motion: no-preference) {
+  .team-member-name {
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: background-position 0.6s ease;
+  }
+  .team-card:hover .team-member-name {
+    background-position: 100% center;
+  }
+}
+
+/* CTA section — word stagger */
+@media (prefers-reduced-motion: no-preference) {
+  .about-cta-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: wordRise 0.65s var(--ease-reveal) both;
+  }
+}
+
+/* LET'S TALK button shimmer */
+@media (prefers-reduced-motion: no-preference) {
+  .pill-btn.primary {
+    position: relative;
+    overflow: hidden;
+  }
+  .pill-btn.primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    transform: skewX(-20deg);
+    transition: left 0s;
+  }
+  .pill-btn.primary:hover::before {
+    left: 160%;
+    transition: left 0.6s var(--ease-organic);
+  }
+}
+
+/* ============================================================
+   6. CONTACT PAGE
+   ============================================================ */
+
+/* Email / Phone links — translateX on hover */
+@media (prefers-reduced-motion: no-preference) {
+  a[href^="mailto:"],
+  a[href^="tel:"] {
+    display: inline-block;
+    transition:
+      transform 0.25s var(--ease-organic),
+      color 0.25s ease;
+  }
+  a[href^="mailto:"]:hover,
+  a[href^="tel:"]:hover {
+    transform: translateX(4px);
+    color: var(--gold) !important;
+  }
+}
+
+/* Form fields — golden border-bottom on focus */
+@media (prefers-reduced-motion: no-preference) {
+  .contact-input-field {
+    transition: border-color 0.3s var(--ease-organic) !important;
+  }
+  .contact-input-field:focus {
+    border-bottom-color: var(--gold) !important;
+  }
+}
+
+/* Map placeholder — intentional golden border */
+.contact-map-placeholder {
+  border: 1px solid rgba(139,105,20,0.3) !important;
+  border-radius: 8px !important;
+}
+
+/* Send button — arrow nudge on hover */
+@media (prefers-reduced-motion: no-preference) {
+  .send-btn-arrow {
+    display: inline-block;
+    transition: transform 0.25s var(--ease-organic);
+  }
+  .pill-btn.primary:hover .send-btn-arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* ============================================================
+   7. BLOGS PAGE — styles now in index.css
+   ============================================================ */
+
+/* Category dot */
+.blog-category-tag::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-right: 7px;
+  vertical-align: middle;
+  margin-bottom: 1px;
+}
+
+/* Date — tabular nums */
+.blog-date {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   8. WORD-STAGGER ANIMATION UTILITY
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .word-stagger .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: wordRise 0.65s var(--ease-reveal) both;
+  }
+}
+
+@keyframes wordRise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   9. SCROLL-REVEAL UTILITY (IntersectionObserver driven)
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 0.7s var(--ease-reveal),
+      transform 0.7s var(--ease-reveal);
+    will-change: transform, opacity;
+  }
+  .reveal-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    will-change: auto;
+  }
+  .reveal-up:nth-child(2) { transition-delay: 0.1s; }
+  .reveal-up:nth-child(3) { transition-delay: 0.2s; }
+  .reveal-up:nth-child(4) { transition-delay: 0.3s; }
+  .reveal-up:nth-child(5) { transition-delay: 0.4s; }
+  .reveal-up:nth-child(6) { transition-delay: 0.5s; }
+}
+
+/* ============================================================
+   10. PILL BUTTON — global shimmer (non-primary variant)
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .pill-btn:not(.primary) {
+    position: relative;
+    overflow: hidden;
+  }
+  .pill-btn:not(.primary)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    transform: skewX(-20deg);
+  }
+  .pill-btn:not(.primary):hover::before {
+    left: 160%;
+    transition: left 0.55s var(--ease-organic);
+  }
+}
+
+/* ============================================================
+   11. FOOTER LINKS — hover translateX
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-footer-links a {
+    display: inline-block;
+    transition:
+      transform 0.22s var(--ease-organic),
+      color 0.22s ease;
+  }
+  .site-footer-links a:hover {
+    transform: translateX(4px);
+  }
+}
+
+/* ============================================================
+   12. TESTIMONIAL CARDS — subtle entrance
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .testimonial-card {
+    transition:
+      transform 0.45s var(--ease-organic),
+      box-shadow 0.45s var(--ease-organic),
+      background 0.45s ease;
+  }
+}
+
+/* ============================================================
+   13. PROCESS STEP DOTS — pop on active
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .process-step-dot {
+    transition:
+      transform 0.3s var(--ease-spring),
+      background 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .process-step-dot.is-active {
+    transform: translateX(-50%) scale(1.15);
+    box-shadow: 0 0 0 6px rgba(123,79,42,0.18), 0 6px 20px rgba(30,20,8,0.2);
+  }
+}
+
+/* ============================================================
+   14. WHY BAMBOO FEATURE ITEMS — active golden border
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .why-feature-item {
+    transition:
+      opacity 0.7s var(--ease-reveal),
+      transform 0.7s var(--ease-reveal),
+      border-color 0.4s ease,
+      padding-left 0.4s ease;
+  }
+}
+
+/* ============================================================
+   15. MARQUEE STRIP — pause on hover
+   ============================================================ */
+
+.marquee-strip:hover .marquee-strip-inner {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   16. MOBILE — disable heavy animations
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .word-stagger .word {
+    animation-duration: 0.4s;
+  }
+  .reveal-up {
+    transition-duration: 0.5s;
+  }
+}
+
+/* ============================================================
+   17. CORE VALUES CARDS — editorial dark redesign
+   ============================================================ */
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+@media (max-width: 900px) {
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Third card spans full width on 2-col layout */
+  .values-grid > *:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.value-card-new {
+  position: relative;
+  background: linear-gradient(145deg, #2A1E12 0%, #1C1409 100%);
+  border: 1px solid rgba(200, 169, 110, 0.12);
+  border-radius: 20px;
+  padding: 44px 36px 40px;
+  overflow: hidden;
+  transition:
+    transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 0.35s ease;
+}
+
+/* Subtle radial glow in top-left corner */
+.value-card-new::after {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(200,169,110,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.value-card-new:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(200,169,110,0.22);
+  border-color: rgba(200, 169, 110, 0.28);
+}
+
+.value-card-new:hover::after {
+  opacity: 1.5;
+}
+
+/* Number — large faint watermark */
+.value-card-number {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(200, 169, 110, 0.07);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+}
+
+/* Icon circle */
+.value-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(200, 169, 110, 0.1);
+  border: 1px solid rgba(200, 169, 110, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C8A96E;
+  margin-bottom: 28px;
+  transition: background 0.35s ease, border-color 0.35s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.value-card-new:hover .value-card-icon {
+  background: rgba(200, 169, 110, 0.18);
+  border-color: rgba(200, 169, 110, 0.4);
+  transform: scale(1.08);
+}
+
+/* Title */
+.value-card-title {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 32px !important;
+  font-weight: 600 !important;
+  color: #F5EFE0 !important;
+  margin: 0 0 16px !important;
+  letter-spacing: -0.01em;
+  transition: color 0.25s ease;
+}
+
+.value-card-new:hover .value-card-title {
+  color: #C8A96E !important;
+}
+
+/* Body */
+.value-card-body {
+  font-size: 0.95rem !important;
+  color: rgba(200, 180, 150, 0.72) !important;
+  line-height: 1.82 !important;
+  margin: 0 0 32px !important;
+  max-width: none !important;
+}
+
+/* Bottom accent line — grows on hover */
+.value-card-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, #8B6914, #C9A84C);
+  border-radius: 0 0 0 20px;
+  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.value-card-new:hover .value-card-line {
+  width: 100%;
+}
+
+/* ============================================================
+   18. GLOBAL TOUCHUPS
+   ============================================================ */
+
+/* Section headings — tighter tracking */
+h2 {
+  letter-spacing: -0.02em;
+}
+
+/* Pill buttons — slightly more padding, rounder */
+.pill-btn {
+  border-radius: 9999px;
+  letter-spacing: 0.14em;
+}
+
+/* Footer stat values — larger on desktop */
+@media (min-width: 1024px) {
+  .site-footer-stat-value {
+    font-size: 3rem;
+  }
+}
+
+/* Testimonial quote marks */
+.testimonial-quote::before {
+  content: '\201C';
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px;
+  line-height: 0;
+  vertical-align: -0.4em;
+  color: rgba(200,169,110,0.18);
+  margin-right: 4px;
+}
+
+/* Why bamboo feature numbers — slightly larger */
+.why-feature-number {
+  font-size: 17px !important;
+}
+
+/* Process step titles — ensure italic */
+.process-step-title {
+  font-style: italic;
+}
+
+/* Scroll-reveal for values grid children */
+@media (prefers-reduced-motion: no-preference) {
+  .value-card-new {
+    will-change: transform, opacity;
+  }
+  .value-card-new.is-done {
+    will-change: auto;
+  }
+}
+
+/* About hero — ensure tag is visible on dark bg */
+.about-hero-tag {
+  color: #C8A96E !important;
+  opacity: 1 !important;
+}
+
+/* Story section heading */
+.about-story-heading {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-primary);
+}
+
+/* CTA section background — subtle warm gradient */
+.about-cta-section {
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-warm-section) 100%);
+  padding: 100px 40px 140px;
+  text-align: center;
+}
+
+/* Blog hero — use bamboo-horizontal for richer bg */
+.blogs-hero {
+  background-image: linear-gradient(rgba(20,14,6,0.52), rgba(12,8,3,0.75)), url("/bamboo-horizontal.jpg") !important;
+  background-position: center 60% !important;
+}
+
+/* Featured on cards — match blog card quality */
+.featured-on-card {
+  border-radius: 4px;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Project detail — gallery images rounded */
+.project-detail-gallery img {
+  border-radius: 12px;
+}
+
+/* Mobile — values grid single column */
+@media (max-width: 768px) {
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+  .value-card-new {
+    padding: 32px 24px;
+  }
+  .value-card-number {
+    font-size: 52px;
+  }
+}
+
+/* ============================================================
+   19. FEATURED ON — full redesign
+   ============================================================ */
+
+.featured-on-section-new {
+  position: relative;
+  background: var(--color-off-white);
+  padding: 120px 40px 140px;
+  overflow: hidden;
+}
+
+/* Subtle bamboo-stalk watermark pattern */
+.featured-on-bg-texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-deep-bamboo) 0px,
+    var(--color-deep-bamboo) 1px,
+    transparent 1px,
+    transparent 80px
+  );
+}
+
+.featured-on-inner-new {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+.featured-on-header-new {
+  text-align: center;
+  margin-bottom: 72px;
+}
+
+.featured-on-eyebrow {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.75;
+  margin-bottom: 18px;
+}
+
+.featured-on-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: -0.025em;
+  line-height: 1.0;
+  color: var(--color-deep-bamboo);
+  margin: 0 0 20px;
+}
+
+.featured-on-heading em {
+  font-style: italic;
+  color: var(--color-primary);
+}
+
+.featured-on-subtext {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+/* Grid */
+.featured-on-grid-new {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 64px;
+}
+
+@media (max-width: 900px) {
+  .featured-on-grid-new {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  .featured-on-grid-new {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Card */
+.featured-on-card-new {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 36px 32px 32px;
+  background: #ffffff;
+  border: 1px solid rgba(58, 47, 30, 0.07);
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition:
+    box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 0.35s ease;
+  cursor: pointer;
+}
+
+.featured-on-card-new:hover {
+  box-shadow: 0 24px 64px rgba(30, 20, 8, 0.11);
+  border-color: rgba(139, 105, 20, 0.2);
+}
+
+/* Accent line — bottom left, grows on hover */
+.foc-accent-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  transition: width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 0 2px 0 0;
+}
+
+.featured-on-card-new:hover .foc-accent-line {
+  width: 60%;
+}
+
+/* Top row */
+.foc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.foc-logo-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--color-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.foc-logo-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.foc-category {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+/* Publication name */
+.foc-publication {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 600;
+  color: var(--color-deep-bamboo);
+  margin: 0 0 10px;
+  line-height: 1.1;
+  transition: color 0.25s ease;
+}
+
+.featured-on-card-new:hover .foc-publication {
+  color: var(--color-primary);
+}
+
+/* Article title */
+.foc-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+
+/* Excerpt */
+.foc-excerpt {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin: 0 0 24px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Footer */
+.foc-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(58, 47, 30, 0.07);
+}
+
+.foc-read-link {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  transition: color 0.25s ease;
+}
+
+.featured-on-card-new:hover .foc-read-link {
+  color: #8B6914;
+}
+
+.featured-on-card-new:hover .foc-arrow {
+  transform: translateX(4px);
+}
+
+/* CTA */
+.featured-on-cta-new {
+  text-align: center;
+}
