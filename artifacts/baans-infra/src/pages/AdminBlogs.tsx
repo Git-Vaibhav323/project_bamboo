@@ -12,7 +12,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
       <label style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A7A60" }}>
-        {label}{required && <span style={{ color: "#b91c1c", marginLeft: "3px" }}>*</span>}
+        {label}
       </label>
       {children}
     </div>
@@ -43,7 +43,7 @@ const TOOLBAR: ToolBtn[] = [
   { label: "H2",        title: "Heading 2",       mode: "prefix", syntax: "## " },
   { label: "H3",        title: "Heading 3",       mode: "prefix", syntax: "### " },
   { label: "B",         title: "Bold",            mode: "wrap",   syntax: "**" },
-  { label: "I",         title: "Italic",          mode: "wrap",   syntax: "_" },
+  { label: "I",         title: "Italic",          mode: "wrap",   syntax: "*" },
   { label: "~~",        title: "Strikethrough",   mode: "wrap",   syntax: "~~" },
   { label: "—",         title: "Divider",         mode: "insert", syntax: "\n\n---\n\n" },
   { label: "• list",    title: "Bullet list",     mode: "prefix", syntax: "- " },
@@ -145,10 +145,21 @@ export default function AdminBlogs() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) { alert("Supabase is not configured."); return; }
+    
+    // Validate only title is required
+    if (!formData.title.trim()) {
+      alert("Please enter a title for the blog post.");
+      return;
+    }
+    
     const payload = {
       ...formData,
       slug: formData.slug || slugify(formData.title),
       published_at: formData.published_at || new Date().toISOString(),
+      excerpt: formData.excerpt || "",
+      content: formData.content || "",
+      category: formData.category || "",
+      cover_image: formData.cover_image || "",
     };
     const { error } = editing
       ? await supabase.from("blogs").update(payload).eq("id", editing.id)
@@ -219,18 +230,18 @@ export default function AdminBlogs() {
                   Article Info
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                  <Field label="Title" required>
+                  <Field label="Title">
                     <input
-                      required style={inp} value={formData.title}
+                      style={inp} value={formData.title}
                       placeholder="e.g. Why Bamboo Is Ready for Luxury Resorts"
                       onChange={e => setFormData({ ...formData, title: e.target.value, slug: formData.slug || slugify(e.target.value) })}
                       onFocus={e => (e.target.style.borderColor = "#8B6914")}
                       onBlur={e => (e.target.style.borderColor = "#e0d8cc")}
                     />
                   </Field>
-                  <Field label="URL Slug" required>
+                  <Field label="URL Slug">
                     <input
-                      required style={{ ...inp, fontFamily: "'Courier New', monospace", fontSize: "13px" }}
+                      style={{ ...inp, fontFamily: "'Courier New', monospace", fontSize: "13px" }}
                       value={formData.slug} placeholder="auto-generated from title"
                       onChange={e => setFormData({ ...formData, slug: slugify(e.target.value) })}
                       onFocus={e => (e.target.style.borderColor = "#8B6914")}
@@ -278,9 +289,9 @@ export default function AdminBlogs() {
                 <p style={{ fontSize: "10px", fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", color: "#C8A96E", marginBottom: "16px", borderBottom: "1px solid #e0d8cc", paddingBottom: "8px" }}>
                   Excerpt <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0, color: "#8A7A60", fontSize: "11px" }}>— shown on blog listing cards</span>
                 </p>
-                <Field label="Short summary (1–2 sentences)" required>
+                <Field label="Short summary (1–2 sentences)">
                   <textarea
-                    required rows={3}
+                    rows={3}
                     style={{ ...inp, resize: "vertical", lineHeight: 1.65 }}
                     value={formData.excerpt}
                     placeholder="A concise summary that appears on the blog listing page..."
@@ -366,7 +377,6 @@ export default function AdminBlogs() {
                 {/* Textarea */}
                 <textarea
                   ref={taRef}
-                  required
                   rows={24}
                   style={{
                     ...inp,
