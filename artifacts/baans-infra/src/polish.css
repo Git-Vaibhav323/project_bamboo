@@ -1334,9 +1334,9 @@ h2 {
    ============================================================ */
 
 .blog-content {
-  max-width: 820px;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1rem;
   box-sizing: border-box;
   color: #2C1810;
   font-family: 'DM Sans', sans-serif;

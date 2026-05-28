@@ -3892,10 +3892,10 @@ img {
 
 /* ── Body wrap — centered, max-width, no overflow ── */
 .blog-detail-body-wrap {
-  max-width: 740px;
+  max-width: 860px;
   width: 100%;
   margin: 0 auto;
-  padding: 72px 24px 120px;
+  padding: 72px 32px 120px;
   box-sizing: border-box;
   overflow-wrap: break-word;
   word-break: break-word;
