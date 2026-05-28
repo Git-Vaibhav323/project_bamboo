@@ -27,6 +27,15 @@ export default function FeelingCardsSection() {
     const center = centerRef.current;
     if (!section || !center) return;
 
+    const mobileOrReducedMotion = window.matchMedia('(max-width: 768px), (prefers-reduced-motion: reduce)').matches;
+    if (mobileOrReducedMotion) {
+      document.documentElement.style.setProperty("--lx", "0px");
+      document.documentElement.style.setProperty("--rx", "0px");
+      center.style.transform = "";
+      setTitleVisible(true);
+      return;
+    }
+
     const lockScroll = () => { document.body.style.overflow = "hidden"; };
     const unlockScroll = () => { document.body.style.overflow = ""; };
 

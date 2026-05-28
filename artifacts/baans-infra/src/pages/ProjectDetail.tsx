@@ -109,9 +109,9 @@ export default function ProjectDetail() {
     : null;
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg)', minHeight: '100vh' }}>
+    <div className="project-detail-page" style={{ backgroundColor: 'var(--color-bg)', minHeight: '100vh' }}>
       {/* Hero */}
-      <div style={{
+      <div className="project-detail-hero" style={{
         height: '88vh',
         minHeight: '560px',
         position: 'relative',
@@ -149,6 +149,7 @@ export default function ProjectDetail() {
       </div>
 {/* Details */}
 <div
+  className="project-detail-content"
   style={{
     maxWidth: '1100px',
     margin: '0 auto',
@@ -323,7 +324,7 @@ export default function ProjectDetail() {
   </motion.div>
        {/* Gallery */}
 {project.galleryImages.length > 0 && (
-  <div style={{ marginTop: '140px' }}>
+  <div className="project-detail-gallery" style={{ marginTop: '140px' }}>
     <h3
       className="subheading"
       style={{
@@ -337,6 +338,7 @@ export default function ProjectDetail() {
     </h3>
 
     <div
+      className="project-gallery-grid"
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(480px, 1fr))',
@@ -358,8 +360,10 @@ export default function ProjectDetail() {
             overflow: 'hidden',
             borderRadius: '20px'
           }}
+          className="project-gallery-item"
         >
           <motion.img
+            className="project-gallery-img"
             src={img}
             alt={`${project.name} gallery ${idx + 1}`}
             whileHover={{ scale: 1.05 }}

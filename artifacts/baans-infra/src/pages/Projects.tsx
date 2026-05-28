@@ -103,9 +103,9 @@ export default function Projects() {
   }
 
   return (
-    <div style={{ paddingTop: '80px', backgroundColor: 'var(--color-bg)', minHeight: '100vh' }}>
+    <div className="projects-page" style={{ paddingTop: '80px', backgroundColor: 'var(--color-bg)', minHeight: '100vh' }}>
       {/* Hero */}
-      <div style={{ 
+      <div className="projects-hero" style={{ 
         position: 'relative', 
         height: '72vh', 
         minHeight: '480px',
@@ -141,7 +141,7 @@ export default function Projects() {
         </motion.div>
       </div>
 
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '80px 40px' }}>
+      <div className="projects-page-inner">
         {/* Filters */}
         <div className="hide-scrollbar" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '60px' }}>
           {filters.map(f => (
@@ -156,17 +156,10 @@ export default function Projects() {
           ))}
         </div>
 
-        {/* Grid */}
         <motion.div
           ref={gridRef}
-          className="projects-grid"
+          className="projects-grid projects-list-grid"
           layout
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '40px',
-            alignItems: 'stretch'
-          }}
         >
           <AnimatePresence>
             {filteredProjects.map((project, idx) => (

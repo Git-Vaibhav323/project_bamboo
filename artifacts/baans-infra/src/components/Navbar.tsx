@@ -8,48 +8,102 @@ import { FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const idleTimerRef = useRef<number>(0);
   const [location] = useLocation();
   const isHome = location === '/';
-  const indicatorRef = useRef<HTMLDivElement>(null);
-  const navRef = useRef<HTMLDivElement>(null);
+  const leftLinks = navLinks.slice(0, 3);
+  const rightLinks = navLinks.slice(3);
 
   // Close mobile menu on route change
   useEffect(() => { setMobileMenuOpen(false); }, [location]);
 
   // Scroll detection for glass effect
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    let lastY = window.scrollY;
+    let revealFromY = window.scrollY;
 
-  // Sliding indicator under active nav link
-  useEffect(() => {
-    if (!navRef.current || !indicatorRef.current) return;
-    const activeEl = navRef.current.querySelector<HTMLElement>('.nav-link-text--active');
-    if (!activeEl) { indicatorRef.current.style.opacity = '0'; return; }
-    const navRect = navRef.current.getBoundingClientRect();
-    const elRect  = activeEl.getBoundingClientRect();
-    indicatorRef.current.style.opacity  = '1';
-    indicatorRef.current.style.left     = `${elRect.left - navRect.left}px`;
-    indicatorRef.current.style.width    = `${elRect.width}px`;
-  }, [location]);
+    const scheduleIdleHide = (currentY: number) => {
+      window.clearTimeout(idleTimerRef.current);
+
+      if (currentY <= 24 || mobileMenuOpen) return;
+
+      idleTimerRef.current = window.setTimeout(() => {
+        revealFromY = window.scrollY;
+        setHidden(true);
+      }, 900);
+    };
+
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      const revealDistance = window.innerHeight * 0.1;
+      setScrolled(currentY > 48);
+
+      if (currentY <= 24) {
+        setHidden(false);
+        revealFromY = currentY;
+        window.clearTimeout(idleTimerRef.current);
+      } else if (currentY > lastY + 4) {
+        revealFromY = Math.max(revealFromY, currentY);
+        setHidden(true);
+        scheduleIdleHide(currentY);
+      } else if (currentY < lastY - 4) {
+        if (revealFromY - currentY >= revealDistance) {
+          setHidden(false);
+        }
+        scheduleIdleHide(currentY);
+      }
+
+      if (Math.abs(currentY - lastY) > 4) {
+        lastY = currentY;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(idleTimerRef.current);
+    };
+  }, [mobileMenuOpen]);
 
   const isTransparent = isHome && !scrolled;
+
+  const renderNavLink = (link: (typeof navLinks)[number]) => {
+    const isActive = location === link.path;
+    return (
+      <Link key={link.path} href={link.path}>
+        <span
+          className={[
+            'nav-link-text',
+            isActive ? 'nav-link-text--active' : '',
+            isTransparent ? 'nav-link-text--light' : '',
+          ].filter(Boolean).join(' ')}
+          style={{
+            color: isTransparent
+              ? isActive ? '#C8A96E' : 'rgba(250,247,242,0.9)'
+              : isActive ? 'var(--color-primary)' : 'var(--color-text)',
+          }}
+        >
+          {link.label}
+        </span>
+      </Link>
+    );
+  };
 
   return (
     <>
       <nav
-        className={['site-nav', isHome ? 'nav-on-hero' : '', scrolled ? 'nav-scrolled' : ''].filter(Boolean).join(' ')}
+        className={['site-nav', isHome ? 'nav-on-hero' : '', scrolled ? 'nav-scrolled' : '', hidden ? 'nav-hidden' : ''].filter(Boolean).join(' ')}
         style={{
           position: 'fixed',
           top: 0, left: 0, right: 0,
           zIndex: 200,
-          padding: scrolled ? '10px clamp(20px,3vw,48px)' : '14px clamp(20px,3vw,48px)',
-          display: 'flex',
-          justifyContent: 'space-between',
+          padding: scrolled ? '4px clamp(18px,2.8vw,44px)' : '6px clamp(18px,2.8vw,44px)',
+          display: 'grid',
           alignItems: 'center',
-          transition: 'background 0.5s ease, backdrop-filter 0.5s ease, padding 0.4s ease, box-shadow 0.4s ease',
+          columnGap: 'clamp(24px, 3.2vw, 58px)',
+          transform: hidden ? 'translateY(-115%)' : 'translateY(0)',
+          transition: 'background 0.5s ease, backdrop-filter 0.5s ease, padding 0.4s ease, box-shadow 0.4s ease, transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
           background: isTransparent
             ? 'transparent'
             : scrolled
@@ -61,90 +115,34 @@ export default function Navbar() {
           boxShadow: scrolled && !isTransparent ? '0 2px 24px rgba(58,47,30,0.08)' : 'none',
         }}
       >
+        <div className="desktop-nav desktop-nav--left">
+          {leftLinks.map(renderNavLink)}
+        </div>
+
         {/* Brand */}
-        <Link href="/" className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-          <LazyImage
-            src="/logo.png"
-            alt="BAANS INFRA"
-            className="nav-logo-img"
-            style={{
-              height: scrolled ? '64px' : '80px',
-              width: 'auto',
-              transition: 'height 0.4s ease',
-              filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
-            }}
-          />
-          <span
-            className="nav-brand-name"
-            style={{
-              fontFamily: 'Cormorant Garamond, serif',
-              fontSize: '1.05rem',
-              fontWeight: 600,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              color: isTransparent ? 'rgba(250,247,242,0.92)' : 'var(--color-text)',
-              transition: 'color 0.4s ease',
-            }}
-          >
-            Baans Infra
+        <Link href="/" className="nav-brand" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0', textDecoration: 'none', justifySelf: 'center' }}>
+          <span className="nav-logo-crop">
+            <LazyImage
+              src="/logo.png"
+              alt="BAANS INFRA"
+              className="nav-logo-img"
+              style={{
+                filter: isTransparent ? 'brightness(0) invert(1)' : 'none',
+              }}
+            />
           </span>
         </Link>
 
         {/* Desktop nav */}
         <div
-          ref={navRef}
-          className="desktop-nav"
-          style={{ display: 'flex', alignItems: 'center', gap: 'clamp(20px,2.8vw,40px)', position: 'relative' }}
+          className="desktop-nav desktop-nav--right"
         >
-          {/* Sliding active indicator */}
-          <div
-            ref={indicatorRef}
-            style={{
-              position: 'absolute',
-              bottom: '-6px',
-              height: '1px',
-              background: isTransparent ? 'rgba(200,169,110,0.8)' : 'var(--color-warm-sand)',
-              transition: 'left 0.35s cubic-bezier(0.25,0.46,0.45,0.94), width 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.25s ease',
-              borderRadius: '1px',
-              pointerEvents: 'none',
-            }}
-          />
-
-          {navLinks.map((link) => {
-            const isActive = location === link.path;
-            return (
-              <Link key={link.path} href={link.path}>
-                <span
-                  className={[
-                    'nav-link-text',
-                    isActive ? 'nav-link-text--active' : '',
-                    isTransparent ? 'nav-link-text--light' : '',
-                  ].filter(Boolean).join(' ')}
-                  style={{
-                    fontFamily: 'DM Sans, sans-serif',
-                    fontSize: '0.72rem',
-                    fontWeight: isActive ? 700 : 500,
-                    letterSpacing: '0.18em',
-                    textTransform: 'uppercase',
-                    color: isTransparent
-                      ? isActive ? '#C8A96E' : 'rgba(250,247,242,0.85)'
-                      : isActive ? 'var(--color-primary)' : 'var(--color-text)',
-                    transition: 'color 0.25s ease, transform 0.2s ease',
-                    display: 'inline-block',
-                    padding: '6px 0',
-                    position: 'relative',
-                  }}
-                >
-                  {link.label}
-                </span>
-              </Link>
-            );
-          })}
+          {rightLinks.map(renderNavLink)}
 
           {/* Divider */}
           <div style={{
             width: '1px',
-            height: '18px',
+            height: '26px',
             background: isTransparent ? 'rgba(250,247,242,0.2)' : 'rgba(58,47,30,0.15)',
             transition: 'background 0.4s ease',
           }} />
@@ -162,13 +160,13 @@ export default function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  width: '34px', height: '34px',
+                  width: '46px', height: '46px',
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                   borderRadius: '50%',
                   border: `1px solid ${isTransparent ? 'rgba(250,247,242,0.3)' : 'rgba(58,47,30,0.15)'}`,
                   color: isTransparent ? 'rgba(250,247,242,0.8)' : 'var(--color-text)',
                   textDecoration: 'none',
-                  fontSize: '13px',
+                  fontSize: '20px',
                   transition: 'transform 0.25s ease, color 0.25s ease, border-color 0.25s ease, background 0.25s ease',
                 }}
                 onMouseEnter={e => {

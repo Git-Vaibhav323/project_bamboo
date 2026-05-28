@@ -29,28 +29,30 @@ export default function OurWorkSection() {
           </h2>
         </header>
 
-        <div className="projects-grid">
+        <div className="ow-showcase-grid">
           {displayProjects.map((project, idx) => (
             <Link
               key={project.slug}
               href={`/projects/${project.slug}`}
-              className="project-card image-card-pop"
+              className={`ow-showcase-card ow-showcase-card--${idx % 2 === 0 ? "from-left" : "from-right"}`}
             >
-              <div className="project-img-wrap">
-                <div className="card-image-shell">
+              <article className="ow-showcase-panel">
+                <div className="card-image-shell ow-showcase-media">
                   <LazyImage
                     src={SAMPLE_IMAGES[idx]}
                     alt={project.name}
-                    className="project-img"
+                    className="ow-showcase-img"
                   />
                 </div>
                 <div className="card-image-gradient" />
-                <div className="card-image-overlay project-overlay">
-                  <h3 className="card-overlay-title project-title">{project.name}</h3>
-                  <p className="card-overlay-location project-location">{project.location}</p>
-                  <span className="project-tag">{project.type}</span>
+                <div className="ow-showcase-rule" aria-hidden />
+                <div className="card-image-overlay ow-showcase-overlay">
+                  <span className="ow-showcase-count">{String(idx + 1).padStart(2, "0")}</span>
+                  <h3 className="card-overlay-title ow-showcase-title">{project.name}</h3>
+                  <p className="card-overlay-location ow-showcase-location">{project.location}</p>
+                  <span className="ow-showcase-tag">{project.type}</span>
                 </div>
-              </div>
+              </article>
             </Link>
           ))}
         </div>

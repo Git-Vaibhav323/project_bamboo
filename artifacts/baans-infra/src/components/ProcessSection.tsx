@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { processSteps } from '../data/data';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -7,10 +7,39 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function ProcessSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isCompact, setIsCompact] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 900px)');
+    const update = () => setIsCompact(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    if (isCompact) {
+      const plants = container.querySelectorAll<HTMLElement>('.process-plant-img');
+      const steps = container.querySelectorAll<HTMLElement>('.process-step-cell');
+      const dots = container.querySelectorAll<HTMLElement>('.process-step-dot');
+      plants.forEach((el) => {
+        el.style.clipPath = 'inset(0% 0 0 0)';
+        el.style.opacity = '1';
+      });
+      steps.forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        el.style.filter = 'none';
+      });
+      dots.forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'translate(-50%, 8px) scale(1)';
+      });
+      return;
+    }
 
     const ctx = gsap.context(() => {
       const plants = gsap.utils.toArray<HTMLElement>('.process-plant-img');
@@ -87,7 +116,7 @@ export default function ProcessSection() {
     }, container);
 
     return () => ctx.revert();
-  }, []);
+  }, [isCompact]);
 
   return (
     <div
@@ -132,7 +161,7 @@ export default function ProcessSection() {
             className="process-steps-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: `repeat(${processSteps.length}, 1fr)`,
+              gridTemplateColumns: isCompact ? '1fr' : `repeat(${processSteps.length}, 1fr)`,
             }}
           >
             {processSteps.map((step) => (
@@ -191,7 +220,7 @@ export default function ProcessSection() {
               className="process-plants-row"
               style={{
                 display: 'grid',
-                gridTemplateColumns: `repeat(${processSteps.length}, 1fr)`,
+                gridTemplateColumns: isCompact ? '1fr' : `repeat(${processSteps.length}, 1fr)`,
               }}
             >
               {processSteps.map((step, i) => {
