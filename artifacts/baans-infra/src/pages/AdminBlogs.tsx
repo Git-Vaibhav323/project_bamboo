@@ -55,15 +55,9 @@ const TOOLBAR: ToolBtn[] = [
 // ─── Smart toolbar action — captures selection BEFORE state update ──────────
 function applyToolbar(
   btn: ToolBtn,
-<<<<<<< HEAD
   taRef: React.RefObject<HTMLTextAreaElement>,
   setContent: (v: string) => void,
   cursorRef: React.MutableRefObject<[number, number]>
-=======
-  content: string,
-  taRef: React.RefObject<HTMLTextAreaElement | null>,
-  setContent: (v: string) => void
->>>>>>> f80cc82fdd409f38daf9d5c44db92d491f9006dc
 ) {
   const ta = taRef.current;
   if (!ta) return;
