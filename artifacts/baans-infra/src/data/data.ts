@@ -125,7 +125,37 @@ export const blogFallback = [
     slug: "why-bamboo-is-ready-for-luxury-resorts",
     title: "Why Bamboo Is Ready for Luxury Resorts",
     excerpt: "Bamboo can be expressive, fast to build, and engineered for hospitality-grade durability when the process is handled correctly.",
-    content: "Bamboo has moved far beyond decorative pergolas. With careful species selection, borax treatment, engineered joinery, and weather-aware detailing, it becomes a serious structural material for resorts, villas, pavilions, and wellness spaces.\n\nFor developers, the advantage is not only ecological. Bamboo structures create a strong guest memory, reduce heavy wet construction on sensitive sites, and can move from concept to handover faster than conventional builds.\n\nThe key is execution. A bamboo project needs early coordination between design, sourcing, treatment, joinery, foundation strategy, and maintenance planning. When those pieces are aligned, the result feels light, durable, and deeply rooted in place.",
+    content: `## Why Bamboo Is Ready for Luxury Resorts
+
+Bamboo has moved far beyond decorative pergolas. With careful species selection, borax treatment, engineered joinery, and weather-aware detailing, it becomes a serious structural material for resorts, villas, pavilions, and wellness spaces.
+
+## The Developer Advantage
+
+For developers, the advantage is not only ecological. Bamboo structures create a strong guest memory, reduce heavy wet construction on sensitive sites, and can move from concept to handover faster than conventional builds.
+
+### Key Benefits
+
+- **Guest memory** — bamboo spaces photograph beautifully and generate organic social sharing
+- **Site sensitivity** — lighter foundations mean less disruption to landscape and ecology
+- **Speed** — a fully operational resort can be completed in 1 to 8 months
+- **Differentiation** — no two bamboo structures look identical; each is a landmark
+
+## The Execution Imperative
+
+The key is execution. A bamboo project needs early coordination between design, sourcing, treatment, joinery, foundation strategy, and maintenance planning.
+
+### What Proper Execution Looks Like
+
+1. **Species selection** — not all bamboo is structural; Dendrocalamus strictus and Bambusa balcooa are preferred
+2. **Borax treatment** — protects against insects and fungal decay for 25+ years
+3. **Engineered joinery** — bolted and pinned connections, not lashed
+4. **Weather detailing** — roof overhangs, drainage channels, and ventilation gaps
+
+> When those pieces are aligned, the result feels light, durable, and deeply rooted in place.
+
+---
+
+At BAANS INFRA, every project begins with a site visit and a material audit. We don't start designing until we understand the terrain, the climate, and the maintenance capacity of the client.`,
     cover_image: "/samples/1.jpg",
     author: "BAANS INFRA Studio",
     category: "Material Insight",
@@ -136,7 +166,47 @@ export const blogFallback = [
     slug: "building-pan-india-with-local-climate-in-mind",
     title: "Building PAN India With Local Climate in Mind",
     excerpt: "From Goa's salt air to Rajasthan's dry heat, bamboo architecture succeeds when detailing responds to the exact terrain.",
-    content: "PAN India bamboo work is never one-size-fits-all. Coastal projects need stronger moisture strategy, hill projects need careful anchoring and drainage, and dry regions need shading and thermal comfort as first principles.\n\nAt BAANS INFRA, each project begins with the site: rainfall, wind, soil, access, hospitality use case, and maintenance capacity. Bamboo adapts beautifully, but it must be detailed with respect.\n\nThat local intelligence is what allows bamboo to become a long-term architectural system rather than a temporary aesthetic.",
+    content: `## Building PAN India With Local Climate in Mind
+
+PAN India bamboo work is never one-size-fits-all. Every region presents a distinct set of challenges — and opportunities — for bamboo architecture.
+
+## Regional Challenges
+
+### Coastal Zones — Goa, Kerala, Konkan
+
+Coastal projects need a stronger moisture strategy. Salt air accelerates surface degradation, and humidity cycles stress joints.
+
+- Double borax treatment with surface sealant
+- Stainless steel or hot-dip galvanised fasteners only
+- Roof overhangs of minimum 900mm on all sides
+- Annual maintenance inspection built into the handover contract
+
+### Hill Stations — Coorg, Munnar, Himachal
+
+Hill projects need careful anchoring and drainage. Soil movement and heavy rainfall are the primary risks.
+
+- Deep concrete pad foundations with anchor bolts
+- Drainage channels cut into the site before construction begins
+- Bamboo species with higher tensile strength for wind loading
+
+### Dry Regions — Rajasthan, Gujarat
+
+Dry regions need shading and thermal comfort as first principles.
+
+1. Thick bamboo walls with air gaps for insulation
+2. Orientation to capture prevailing breeze
+3. Shading screens on west-facing elevations
+4. Evaporative cooling through water features integrated into the design
+
+## The BAANS INFRA Approach
+
+At BAANS INFRA, each project begins with the site: rainfall, wind, soil, access, hospitality use case, and maintenance capacity. Bamboo adapts beautifully, but it must be detailed with respect.
+
+> That local intelligence is what allows bamboo to become a long-term architectural system rather than a temporary aesthetic.
+
+---
+
+We have built across Maharashtra, Goa, Karnataka, Kerala, Assam, Tamil Nadu, Rajasthan, and the Northeast. Each project has taught us something new about how bamboo behaves in that specific microclimate.`,
     cover_image: "/samples/2.jpg",
     author: "BAANS INFRA Studio",
     category: "Execution",

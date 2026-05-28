@@ -1328,3 +1328,251 @@ h2 {
   .bc-featured-img-wrap { min-height: 260px; }
   .bc-featured-body { padding: 32px 24px; }
 }
+
+/* ============================================================
+   21. BLOG CONTENT — Markdown rendered styles
+   ============================================================ */
+
+.blog-content {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  color: #2C1810;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(17px, 1.6vw, 19px);
+  line-height: 1.85;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Paragraphs */
+.blog-content p {
+  margin: 0 0 1.6em;
+  color: #3B2F1E;
+  line-height: 1.85;
+  font-size: inherit;
+  max-width: 100%;
+}
+
+/* H1 — article-level title (rarely used inside content) */
+.blog-content h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 600;
+  color: #2C1810;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin: 2.4em 0 0.6em;
+  padding-bottom: 0.4em;
+  border-bottom: 2px solid rgba(139,105,20,0.25);
+}
+
+/* H2 — section headings */
+.blog-content h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 600;
+  color: #2C1810;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 2.2em 0 0.7em;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid rgba(139,105,20,0.2);
+}
+
+/* H3 — sub-section headings */
+.blog-content h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 600;
+  color: #7B4F2A;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 1.8em 0 0.5em;
+}
+
+/* H4 */
+.blog-content h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2C1810;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 1.6em 0 0.4em;
+}
+
+/* Strong / bold */
+.blog-content strong {
+  font-weight: 700;
+  color: #2C1810;
+}
+
+/* Em / italic */
+.blog-content em {
+  font-style: italic;
+  color: #5C3E18;
+}
+
+/* Unordered lists */
+.blog-content ul {
+  margin: 0 0 1.6em 0;
+  padding-left: 1.6em;
+  list-style: none;
+}
+
+.blog-content ul li {
+  position: relative;
+  padding-left: 1.2em;
+  margin-bottom: 0.55em;
+  color: #3B2F1E;
+  line-height: 1.75;
+}
+
+/* Golden bullet marker */
+.blog-content ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8B6914;
+  flex-shrink: 0;
+}
+
+/* Ordered lists */
+.blog-content ol {
+  margin: 0 0 1.6em 0;
+  padding-left: 1.8em;
+  counter-reset: ol-counter;
+  list-style: none;
+}
+
+.blog-content ol li {
+  position: relative;
+  padding-left: 0.4em;
+  margin-bottom: 0.55em;
+  color: #3B2F1E;
+  line-height: 1.75;
+  counter-increment: ol-counter;
+}
+
+.blog-content ol li::before {
+  content: counter(ol-counter) ".";
+  position: absolute;
+  left: -1.6em;
+  top: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1em;
+  font-weight: 700;
+  color: #8B6914;
+  min-width: 1.4em;
+  text-align: right;
+}
+
+/* Nested lists */
+.blog-content ul ul,
+.blog-content ol ol,
+.blog-content ul ol,
+.blog-content ol ul {
+  margin: 0.4em 0 0.4em 0;
+}
+
+/* Blockquote */
+.blog-content blockquote {
+  margin: 2em 0;
+  padding: 1.2em 1.6em;
+  border-left: 3px solid #8B6914;
+  background: rgba(139,105,20,0.05);
+  border-radius: 0 8px 8px 0;
+}
+
+.blog-content blockquote p {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 1.8vw, 22px);
+  font-style: italic;
+  color: #5C3E18;
+  line-height: 1.7;
+}
+
+/* Horizontal rule */
+.blog-content hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139,105,20,0.3), transparent);
+  margin: 2.5em 0;
+}
+
+/* Links */
+.blog-content a {
+  color: #8B6914;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(139,105,20,0.4);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.blog-content a:hover {
+  color: #5C3E18;
+  text-decoration-color: #5C3E18;
+}
+
+/* Inline code */
+.blog-content code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.88em;
+  background: rgba(139,105,20,0.08);
+  border: 1px solid rgba(139,105,20,0.15);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #7B4F2A;
+}
+
+/* Code block */
+.blog-content pre {
+  background: #1C1409;
+  border-radius: 8px;
+  padding: 1.4em 1.6em;
+  overflow-x: auto;
+  margin: 1.8em 0;
+}
+
+.blog-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #C8A96E;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* Images inside content */
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.6em 0;
+  display: block;
+}
+
+/* First paragraph — slightly larger lead-in */
+.blog-content > p:first-of-type {
+  font-size: clamp(18px, 1.8vw, 21px);
+  color: #2C1810;
+  line-height: 1.8;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .blog-content {
+    padding: 0 0;
+    font-size: 16px;
+  }
+  .blog-content h2 { font-size: 22px; }
+  .blog-content h3 { font-size: 19px; }
+  .blog-content blockquote { padding: 1em 1.2em; }
+}

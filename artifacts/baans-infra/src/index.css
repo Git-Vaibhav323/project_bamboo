@@ -3994,15 +3994,7 @@ img {
   max-width: 100%;
 }
 
-.blog-detail-prose p:first-child::first-letter {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 4.5em;
-  font-weight: 700;
-  float: left;
-  line-height: 0.75;
-  margin: 8px 12px 0 0;
-  color: var(--color-primary);
-}
+/* drop-cap removed */
 
 /* ── Tags ── */
 .blog-detail-tags {
@@ -4101,9 +4093,7 @@ img {
   .blog-detail-date-block {
     text-align: left;
   }
-  .blog-detail-prose p:first-child::first-letter {
-    font-size: 3.5em;
-  }
+  /* drop-cap removed on mobile too */
 }
 
 .process-plant-img {

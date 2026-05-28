@@ -118,7 +118,98 @@ export default function AdminBlogs() {
                 <input type="date" style={inputStyle} value={formData.published_at} onChange={(e) => setFormData({ ...formData, published_at: e.target.value })} />
               </div>
               <textarea required placeholder="Excerpt" rows={3} style={{ ...inputStyle, marginTop: "16px" }} value={formData.excerpt} onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })} />
-              <textarea required placeholder="Article content. Use blank lines between paragraphs." rows={10} style={{ ...inputStyle, marginTop: "16px" }} value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} />
+
+              {/* ── Markdown cheatsheet bar ── */}
+              <div style={{
+                marginTop: "16px",
+                background: "#faf7f2",
+                border: "1px solid #ddd",
+                borderBottom: "none",
+                borderRadius: "4px 4px 0 0",
+                padding: "10px 14px",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "8px",
+                alignItems: "center",
+              }}>
+                <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A7A60", marginRight: "4px" }}>
+                  Markdown:
+                </span>
+                {[
+                  { label: "# H1",       insert: "# " },
+                  { label: "## H2",      insert: "## " },
+                  { label: "### H3",     insert: "### " },
+                  { label: "**bold**",   insert: "**bold**" },
+                  { label: "- bullet",   insert: "- " },
+                  { label: "1. list",    insert: "1. " },
+                  { label: "> quote",    insert: "> " },
+                  { label: "---",        insert: "\n---\n" },
+                ].map(({ label, insert }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    title={`Insert: ${insert.trim()}`}
+                    onClick={() => {
+                      const ta = document.getElementById("blog-content-ta") as HTMLTextAreaElement | null;
+                      if (!ta) return;
+                      const start = ta.selectionStart;
+                      const end = ta.selectionEnd;
+                      const before = formData.content.slice(0, start);
+                      const after = formData.content.slice(end);
+                      const newContent = before + insert + after;
+                      setFormData({ ...formData, content: newContent });
+                      // Restore cursor after React re-render
+                      requestAnimationFrame(() => {
+                        ta.focus();
+                        ta.setSelectionRange(start + insert.length, start + insert.length);
+                      });
+                    }}
+                    style={{
+                      fontFamily: "'Courier New', monospace",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      color: "#8B6914",
+                      background: "rgba(139,105,20,0.08)",
+                      border: "1px solid rgba(139,105,20,0.25)",
+                      borderRadius: "4px",
+                      padding: "3px 10px",
+                      cursor: "pointer",
+                      transition: "background 0.2s ease, border-color 0.2s ease",
+                      lineHeight: 1.5,
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLButtonElement).style.background = "rgba(139,105,20,0.16)";
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(139,105,20,0.5)";
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLButtonElement).style.background = "rgba(139,105,20,0.08)";
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(139,105,20,0.25)";
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+                <span style={{ marginLeft: "auto", fontSize: "11px", color: "#8A7A60", fontStyle: "italic" }}>
+                  Blank line between paragraphs
+                </span>
+              </div>
+
+              <textarea
+                id="blog-content-ta"
+                required
+                placeholder={`Write your article in Markdown...\n\n## Section Heading\n\nYour paragraph text here.\n\n- Bullet point one\n- Bullet point two\n\n> A blockquote or key insight`}
+                rows={16}
+                style={{
+                  ...inputStyle,
+                  borderRadius: "0 0 4px 4px",
+                  fontFamily: "'Courier New', monospace",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
+                  resize: "vertical",
+                }}
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              />
               <label style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "16px", fontSize: "14px" }}>
                 <input type="checkbox" checked={formData.is_published} onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })} />
                 Published
