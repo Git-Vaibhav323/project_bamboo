@@ -11,28 +11,38 @@ const LEAVES: Leaf[] = [
   { nodeIdx: 5, side: 'top',    delay: 0.05 },
 ];
 
-export default function LoadingScreen() {
-  const [visible, setVisible]   = useState(true);
+type LoadingScreenProps = {
+  active?: boolean;
+  duration?: number;
+};
+
+export default function LoadingScreen({ active, duration = 2400 }: LoadingScreenProps = {}) {
+  const controlled = typeof active === 'boolean';
+  const [internalVisible, setInternalVisible] = useState(true);
   const [progress, setProgress] = useState(0);
   const rafRef   = useRef<number>(0);
   const startRef = useRef<number>(0);
-  const DURATION = 2400;
+  const visible = controlled ? active : internalVisible;
 
   useEffect(() => {
+    if (!visible) return;
+    setProgress(0);
     startRef.current = performance.now();
     const tick = (now: number) => {
-      const p = Math.min(1, (now - startRef.current) / DURATION);
+      const p = Math.min(1, (now - startRef.current) / duration);
       const eased = 1 - Math.pow(1 - p, 3);
       setProgress(eased);
       if (p < 1) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
-        setTimeout(() => setVisible(false), 700);
+        if (!controlled) {
+          setTimeout(() => setInternalVisible(false), 700);
+        }
       }
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, []);
+  }, [controlled, duration, visible]);
 
   const TRACK_W = Math.min(window.innerWidth * 0.48, 420);
   const STALK_H = 14;  // bolder stalk
@@ -64,7 +74,7 @@ export default function LoadingScreen() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            style={{ height: '80px', width: 'auto', filter: 'brightness(0) invert(1)' }}
+            style={{ height: 'clamp(150px, 18vw, 260px)', width: 'auto', filter: 'brightness(0) invert(1)' }}
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
 

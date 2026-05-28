@@ -1,61 +1,114 @@
-import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'wouter';
 import { projects } from '../data/data';
 import LazyImage from './LazyImage';
 
 export default function FeaturedWorksCarousel() {
-  const [activeIdx, setActiveIdx] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
   const dragStartX = useRef(0);
+  const dragStartScroll = useRef(0);
   const isDragging = useRef(false);
+  const hasDragged = useRef(false);
+  const [activeIdx, setActiveIdx] = useState(0);
 
-  const handlePointerDown = (e: React.PointerEvent) => {
-    dragStartX.current = e.clientX;
-    isDragging.current = true;
-  };
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
 
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    const diff = dragStartX.current - e.clientX;
-    if (diff > 60 && activeIdx < projects.length - 1) setActiveIdx(i => i + 1);
-    if (diff < -60 && activeIdx > 0) setActiveIdx(i => i - 1);
-  };
+    const updateActive = () => {
+      const cards = Array.from(track.querySelectorAll<HTMLElement>('.featured-train-card'));
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let closest = 0;
+      let closestDistance = Infinity;
 
-  const handlePointerCancel = () => {
-    isDragging.current = false;
+      cards.forEach((card, idx) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const distance = Math.abs(cardCenter - center);
+        if (distance < closestDistance) {
+          closest = idx;
+          closestDistance = distance;
+        }
+      });
+
+      setActiveIdx(closest);
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.button !== 0) return;
+      isDragging.current = true;
+      hasDragged.current = false;
+      dragStartX.current = event.clientX;
+      dragStartScroll.current = track.scrollLeft;
+      track.classList.add('is-dragging');
+      track.setPointerCapture(event.pointerId);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!isDragging.current) return;
+      const delta = event.clientX - dragStartX.current;
+      if (Math.abs(delta) > 6) hasDragged.current = true;
+      track.scrollLeft = dragStartScroll.current - delta;
+    };
+
+    const stopDrag = (event: PointerEvent) => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      track.classList.remove('is-dragging');
+      if (track.hasPointerCapture(event.pointerId)) {
+        track.releasePointerCapture(event.pointerId);
+      }
+      window.setTimeout(updateActive, 120);
+    };
+
+    updateActive();
+    track.addEventListener('scroll', updateActive, { passive: true });
+    track.addEventListener('pointerdown', onPointerDown);
+    track.addEventListener('pointermove', onPointerMove);
+    track.addEventListener('pointerup', stopDrag);
+    track.addEventListener('pointercancel', stopDrag);
+    window.addEventListener('resize', updateActive);
+
+    return () => {
+      track.removeEventListener('scroll', updateActive);
+      track.removeEventListener('pointerdown', onPointerDown);
+      track.removeEventListener('pointermove', onPointerMove);
+      track.removeEventListener('pointerup', stopDrag);
+      track.removeEventListener('pointercancel', stopDrag);
+      window.removeEventListener('resize', updateActive);
+    };
+  }, []);
+
+  const scrollToCard = (idx: number) => {
+    const track = trackRef.current;
+    const card = track?.querySelectorAll<HTMLElement>('.featured-train-card')[idx];
+    if (!track || !card) return;
+
+    track.scrollTo({
+      left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2,
+      behavior: 'smooth',
+    });
+    setActiveIdx(idx);
   };
 
   return (
-    <div className="featured-carousel-wrap">
-      <div
-        className="featured-carousel-stage"
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerCancel}
-      >
-        {projects.map((project, idx) => {
-          const diff = idx - activeIdx;
-          const isCenter = diff === 0;
-          const isVisible = Math.abs(diff) <= 2;
-
-          return (
-            <motion.div
+    <div className="featured-carousel-wrap" aria-label="Featured projects">
+      <div className="featured-carousel-stage">
+        <div ref={trackRef} className="featured-train featured-train--draggable">
+          {projects.map((project, idx) => (
+            <Link
               key={project.slug}
-              className="featured-carousel-item"
-              animate={{
-                x: `calc(-50% + ${diff * 680}px)`,
-                y: '-50%',
-                scale: isCenter ? 1 : Math.abs(diff) === 1 ? 0.72 : 0.52,
-                zIndex: isCenter ? 10 : 10 - Math.abs(diff),
-                opacity: isVisible ? (isCenter ? 1 : Math.abs(diff) === 1 ? 0.65 : 0.28) : 0,
-              }}
-              transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
-              onClick={() => {
-                if (!isCenter) setActiveIdx(idx);
+              href={`/projects/${project.slug}`}
+              className={`featured-train-card${idx === activeIdx ? ' featured-train-card--active' : ''}`}
+              aria-label={`View ${project.name}`}
+              draggable={false}
+              onClick={(event) => {
+                if (hasDragged.current) {
+                  event.preventDefault();
+                  hasDragged.current = false;
+                }
               }}
             >
-              <div className={`featured-card ${isCenter ? 'featured-card--center' : 'featured-card--side'}`}>
+              <article className="featured-card">
                 <div className="card-image-shell featured-card-shell">
                   <LazyImage
                     src={project.coverImage}
@@ -64,29 +117,27 @@ export default function FeaturedWorksCarousel() {
                   />
                 </div>
                 <div className="card-image-gradient" />
-                {isCenter && (
-                  <div className="card-image-overlay featured-card-overlay">
-                    <h3 className="card-overlay-title">{project.name}</h3>
-                    <p className="card-overlay-location">{project.location}</p>
-                    <Link href={`/projects/${project.slug}`} className="card-overlay-link">
-                      View →
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
+                <div className="featured-card-sheen" aria-hidden />
+                <div className="card-image-overlay featured-card-overlay">
+                  <span className="featured-card-index">{String(idx + 1).padStart(2, '0')}</span>
+                  <h3 className="card-overlay-title">{project.name}</h3>
+                  <p className="card-overlay-location">{project.location}</p>
+                  <span className="card-overlay-link">View Project</span>
+                </div>
+              </article>
+            </Link>
+          ))}
+        </div>
       </div>
 
-      <div className="featured-carousel-dots">
-        {projects.map((_, i) => (
+      <div className="featured-train-dots" aria-label="Featured project navigation">
+        {projects.map((project, idx) => (
           <button
-            key={i}
+            key={project.slug}
             type="button"
-            aria-label={`Go to project ${i + 1}`}
-            onClick={() => setActiveIdx(i)}
-            className={`featured-dot ${i === activeIdx ? 'featured-dot--active' : ''}`}
+            className={`featured-train-dot${idx === activeIdx ? ' featured-train-dot--active' : ''}`}
+            onClick={() => scrollToCard(idx)}
+            aria-label={`Show ${project.name}`}
           />
         ))}
       </div>

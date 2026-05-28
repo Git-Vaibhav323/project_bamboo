@@ -62,10 +62,10 @@ export default function Contact() {
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg)', minHeight: '100vh', paddingTop: '120px' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
+    <div className="contact-page" style={{ backgroundColor: 'var(--color-bg)', minHeight: '100vh', paddingTop: '120px' }}>
+      <div className="contact-page-inner" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px' }}>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '80px' }}>
+        <div className="contact-page-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '80px' }}>
           
           {/* Left Col - Info */}
           <motion.div
@@ -107,6 +107,7 @@ export default function Contact() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            className="contact-page-form-card"
             style={{ backgroundColor: 'var(--color-ivory)', padding: '60px 40px', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.02)' }}
           >
             {submitted ? (
@@ -148,7 +149,7 @@ export default function Contact() {
                   />
                 </div>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div className="contact-page-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                   <input 
                     type="email" 
                     placeholder="Email Address *" 

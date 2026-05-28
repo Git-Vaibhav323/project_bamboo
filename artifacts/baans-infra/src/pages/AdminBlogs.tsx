@@ -56,7 +56,7 @@ const TOOLBAR: ToolBtn[] = [
 function applyToolbar(
   btn: ToolBtn,
   content: string,
-  taRef: React.RefObject<HTMLTextAreaElement>,
+  taRef: React.RefObject<HTMLTextAreaElement | null>,
   setContent: (v: string) => void
 ) {
   const ta = taRef.current;
