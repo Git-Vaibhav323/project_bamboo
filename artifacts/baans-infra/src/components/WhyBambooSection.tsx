@@ -11,6 +11,7 @@ function lerp(a: number, b: number, t: number) {
 }
 
 export default function WhyBambooSection() {
+  const revealRef = useScrollReveal<HTMLElement>();
   const sectionRef = useRef<HTMLElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
   const revealPanelRef = useRef<HTMLDivElement>(null);
@@ -94,7 +95,12 @@ export default function WhyBambooSection() {
 
   return (
     <section
-      ref={sectionRef}
+      ref={(el) => {
+        if (revealRef && 'current' in revealRef) {
+          (revealRef as React.MutableRefObject<HTMLElement | null>).current = el;
+        }
+        sectionRef.current = el;
+      }}
       className="scroll-reveal why-bamboo-section"
     >
       <div className="why-bamboo-split">

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'wouter';
+import { useLocation } from 'wouter';
 import { projects } from '../data/data';
 import LazyImage from './LazyImage';
 
@@ -8,8 +8,10 @@ export default function FeaturedWorksCarousel() {
   const dragStartX = useRef(0);
   const dragStartScroll = useRef(0);
   const isDragging = useRef(false);
-  const hasDragged = useRef(false);
+  // Pixels moved during the current press — distinguishes tap from drag
+  const dragDelta = useRef(0);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     const track = trackRef.current;
@@ -20,60 +22,51 @@ export default function FeaturedWorksCarousel() {
       const center = track.scrollLeft + track.clientWidth / 2;
       let closest = 0;
       let closestDistance = Infinity;
-
-      cards.forEach((card, idx) => {
+      cards.forEach((card, i) => {
         const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        const distance = Math.abs(cardCenter - center);
-        if (distance < closestDistance) {
-          closest = idx;
-          closestDistance = distance;
-        }
+        const dist = Math.abs(cardCenter - center);
+        if (dist < closestDistance) { closest = i; closestDistance = dist; }
       });
-
       setActiveIdx(closest);
     };
 
-    const onPointerDown = (event: PointerEvent) => {
-      if (event.button !== 0) return;
+    const onMouseDown = (e: MouseEvent) => {
+      if (e.button !== 0) return;
       isDragging.current = true;
-      hasDragged.current = false;
-      dragStartX.current = event.clientX;
+      dragDelta.current = 0;
+      dragStartX.current = e.clientX;
       dragStartScroll.current = track.scrollLeft;
-      track.classList.add('is-dragging');
-      track.setPointerCapture(event.pointerId);
+      track.style.cursor = 'grabbing';
+      track.style.userSelect = 'none';
     };
 
-    const onPointerMove = (event: PointerEvent) => {
+    const onMouseMove = (e: MouseEvent) => {
       if (!isDragging.current) return;
-      const delta = event.clientX - dragStartX.current;
-      if (Math.abs(delta) > 6) hasDragged.current = true;
+      const delta = e.clientX - dragStartX.current;
+      dragDelta.current = Math.abs(delta);
       track.scrollLeft = dragStartScroll.current - delta;
     };
 
-    const stopDrag = (event: PointerEvent) => {
+    const onMouseUp = () => {
       if (!isDragging.current) return;
       isDragging.current = false;
-      track.classList.remove('is-dragging');
-      if (track.hasPointerCapture(event.pointerId)) {
-        track.releasePointerCapture(event.pointerId);
-      }
-      window.setTimeout(updateActive, 120);
+      track.style.cursor = 'grab';
+      track.style.userSelect = '';
+      window.setTimeout(updateActive, 80);
     };
 
     updateActive();
     track.addEventListener('scroll', updateActive, { passive: true });
-    track.addEventListener('pointerdown', onPointerDown);
-    track.addEventListener('pointermove', onPointerMove);
-    track.addEventListener('pointerup', stopDrag);
-    track.addEventListener('pointercancel', stopDrag);
+    track.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
     window.addEventListener('resize', updateActive);
 
     return () => {
       track.removeEventListener('scroll', updateActive);
-      track.removeEventListener('pointerdown', onPointerDown);
-      track.removeEventListener('pointermove', onPointerMove);
-      track.removeEventListener('pointerup', stopDrag);
-      track.removeEventListener('pointercancel', stopDrag);
+      track.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
       window.removeEventListener('resize', updateActive);
     };
   }, []);
@@ -82,7 +75,6 @@ export default function FeaturedWorksCarousel() {
     const track = trackRef.current;
     const card = track?.querySelectorAll<HTMLElement>('.featured-train-card')[idx];
     if (!track || !card) return;
-
     track.scrollTo({
       left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2,
       behavior: 'smooth',
@@ -90,21 +82,40 @@ export default function FeaturedWorksCarousel() {
     setActiveIdx(idx);
   };
 
+  const handleCardClick = (slug: string) => {
+    // Only navigate if the user didn't drag (i.e. it was a real tap/click)
+    if (dragDelta.current <= 6) {
+      setLocation(`/projects/${slug}`);
+    }
+    dragDelta.current = 0;
+  };
+
   return (
     <div className="featured-carousel-wrap" aria-label="Featured projects">
       <div className="featured-carousel-stage">
-        <div ref={trackRef} className="featured-train featured-train--draggable">
+        <div
+          ref={trackRef}
+          className="featured-train featured-train--draggable"
+          style={{ cursor: 'grab' }}
+        >
           {projects.map((project, idx) => (
-            <Link
+            <div
               key={project.slug}
-              href={`/projects/${project.slug}`}
               className={`featured-train-card${idx === activeIdx ? ' featured-train-card--active' : ''}`}
-              aria-label={`View ${project.name}`}
-              draggable={false}
-              onClick={(event) => {
-                if (hasDragged.current) {
-                  event.preventDefault();
-                  hasDragged.current = false;
+              role="button"
+              tabIndex={0}
+              aria-label={`View project: ${project.name}`}
+              style={{ cursor: 'pointer', pointerEvents: 'all' }}
+              onMouseDown={(e) => {
+                // Record start position on the card itself for accurate delta tracking
+                dragStartX.current = e.clientX;
+                dragDelta.current = 0;
+              }}
+              onClick={() => handleCardClick(project.slug)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setLocation(`/projects/${project.slug}`);
                 }
               }}
             >
@@ -122,10 +133,10 @@ export default function FeaturedWorksCarousel() {
                   <span className="featured-card-index">{String(idx + 1).padStart(2, '0')}</span>
                   <h3 className="card-overlay-title">{project.name}</h3>
                   <p className="card-overlay-location">{project.location}</p>
-                  <span className="card-overlay-link">View Project</span>
+                  <span className="card-overlay-link">View Project →</span>
                 </div>
               </article>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
