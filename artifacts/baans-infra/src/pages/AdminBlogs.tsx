@@ -52,59 +52,62 @@ const TOOLBAR: ToolBtn[] = [
   { label: "`code`",    title: "Inline code",     mode: "wrap",   syntax: "`" },
 ];
 
-// ─── Smart toolbar action ────────────────────────────────────
+// ─── Smart toolbar action — captures selection BEFORE state update ──────────
 function applyToolbar(
   btn: ToolBtn,
-  content: string,
   taRef: React.RefObject<HTMLTextAreaElement>,
-  setContent: (v: string) => void
+  setContent: (v: string) => void,
+  cursorRef: React.MutableRefObject<[number, number]>
 ) {
   const ta = taRef.current;
   if (!ta) return;
 
-  const start = ta.selectionStart;
-  const end   = ta.selectionEnd;
+  // Capture selection NOW, before any state update clears it
+  const start    = ta.selectionStart;
+  const end      = ta.selectionEnd;
+  const content  = ta.value;          // read directly from DOM, not stale state
   const selected = content.slice(start, end);
+
   let newContent = content;
-  let newCursor  = start;
+  let newStart   = start;
+  let newEnd     = start;
 
   if (btn.mode === "wrap") {
     const open  = btn.syntax;
     const close = btn.syntaxEnd ?? btn.syntax;
     if (selected) {
-      // Wrap selected text
       newContent = content.slice(0, start) + open + selected + close + content.slice(end);
-      newCursor  = start + open.length + selected.length + close.length;
+      newStart   = start + open.length;
+      newEnd     = start + open.length + selected.length;
     } else {
-      // Insert markers and place cursor between them
       newContent = content.slice(0, start) + open + close + content.slice(end);
-      newCursor  = start + open.length;
+      newStart   = start + open.length;
+      newEnd     = newStart;
     }
   } else if (btn.mode === "prefix") {
-    // Find start of the line
     const lineStart = content.lastIndexOf("\n", start - 1) + 1;
     newContent = content.slice(0, lineStart) + btn.syntax + content.slice(lineStart);
-    newCursor  = start + btn.syntax.length;
+    newStart   = start + btn.syntax.length;
+    newEnd     = newStart;
   } else {
-    // Raw insert at cursor
     newContent = content.slice(0, start) + btn.syntax + content.slice(end);
-    newCursor  = start + btn.syntax.length;
+    newStart   = start + btn.syntax.length;
+    newEnd     = newStart;
   }
 
+  // Store desired cursor position for after React re-render
+  cursorRef.current = [newStart, newEnd];
   setContent(newContent);
-  requestAnimationFrame(() => {
-    ta.focus();
-    ta.setSelectionRange(newCursor, newCursor);
-  });
 }
 
 // ─── Main component ──────────────────────────────────────────
 export default function AdminBlogs() {
-  const [blogs, setBlogs]     = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs]       = useState<Blog[]>([]);
+  const [loading, setLoading]   = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing]   = useState<Blog | null>(null);
-  const taRef = useRef<HTMLTextAreaElement>(null);
+  const taRef    = useRef<HTMLTextAreaElement>(null);
+  const cursorRef = useRef<[number, number]>([0, 0]);
 
   const [formData, setFormData] = useState({
     title: "", slug: "", excerpt: "", content: "",
@@ -112,7 +115,16 @@ export default function AdminBlogs() {
     category: "", published_at: "", is_published: true,
   });
 
-  const setContent = useCallback((v: string) => setFormData(f => ({ ...f, content: v })), []);
+  // setContent: update state AND restore cursor after React re-render
+  const setContent = useCallback((v: string) => {
+    setFormData(f => ({ ...f, content: v }));
+    requestAnimationFrame(() => {
+      const ta = taRef.current;
+      if (!ta) return;
+      ta.focus();
+      ta.setSelectionRange(cursorRef.current[0], cursorRef.current[1]);
+    });
+  }, []);
 
   useEffect(() => { fetchBlogs(); }, []);
 
@@ -329,7 +341,7 @@ export default function AdminBlogs() {
                         key={btn.label}
                         type="button"
                         title={btn.title}
-                        onClick={() => applyToolbar(btn, formData.content, taRef, setContent)}
+                        onClick={() => applyToolbar(btn, taRef, setContent, cursorRef)}
                         style={{
                           fontFamily: isBold || isItalic ? "Georgia, serif" : "'Courier New', monospace",
                           fontWeight: isBold ? 900 : 600,
