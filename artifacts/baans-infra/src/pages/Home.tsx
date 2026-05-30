@@ -10,6 +10,7 @@ import FeelingCardsSection from "../components/FeelingCardsSection";
 import LazyImage from "../components/LazyImage";
 import SectionDivider from "../components/SectionDivider";
 import SketchfabSection from "../components/SketchfabSection";
+import InstagramGridSection from "../components/InstagramGridSection";
 import TestimonialsSection from "../components/TestimonialsSection";
 import ContactFormSection from "../components/ContactFormSection";
 import FeaturedOnSection from "../components/FeaturedOnSection";
@@ -473,6 +474,7 @@ export default function Home() {
       <SketchfabSection />
       <SectionDivider fill="var(--color-off-white)" />
       <OurWorkSection />
+      <InstagramGridSection />
       <SectionDivider fill="var(--color-forest-dark)" />
       <TestimonialsSection />
       <SectionDivider fill="var(--color-off-white)" flip />

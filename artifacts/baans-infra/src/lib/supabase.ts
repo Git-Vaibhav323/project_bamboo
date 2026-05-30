@@ -73,6 +73,14 @@ export interface MediaFeature {
   updated_at: string;
 }
 
+export interface InstagramGalleryItem {
+  id: string;
+  image_url: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
 export interface Blog {
   id: string;
   slug: string;

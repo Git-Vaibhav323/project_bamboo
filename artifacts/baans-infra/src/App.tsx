@@ -22,6 +22,7 @@ const AdminTeam = lazy(() => import("./pages/AdminTeam"));
 const AdminContacts = lazy(() => import("./pages/AdminContacts"));
 const AdminBlogs = lazy(() => import("./pages/AdminBlogs"));
 const AdminFeatures = lazy(() => import("./pages/AdminFeatures"));
+const AdminSettings = lazy(() => import("./pages/AdminSettings"));
 const NotFound = lazy(() => import("./pages/not-found"));
 
 function RouteLoadingScreen() {
@@ -75,6 +76,7 @@ function Router() {
           <Route path="/admin/contacts" component={AdminContacts} />
           <Route path="/admin/blogs" component={AdminBlogs} />
           <Route path="/admin/features" component={AdminFeatures} />
+          <Route path="/admin/settings" component={AdminSettings} />
           <Route component={NotFound} />
         </Switch>
       </Suspense>

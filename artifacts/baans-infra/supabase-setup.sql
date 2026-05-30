@@ -275,6 +275,84 @@ CREATE TRIGGER set_updated_at
 
 
 -- =====================================================
+-- 4C. SITE SETTINGS TABLE
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to site settings"          ON public.site_settings;
+DROP POLICY IF EXISTS "Allow authenticated users to insert site settings"  ON public.site_settings;
+DROP POLICY IF EXISTS "Allow authenticated users to update site settings"  ON public.site_settings;
+DROP POLICY IF EXISTS "Allow authenticated users to delete site settings"  ON public.site_settings;
+
+CREATE POLICY "Allow public read access to site settings"
+    ON public.site_settings FOR SELECT TO public USING (true);
+
+CREATE POLICY "Allow authenticated users to insert site settings"
+    ON public.site_settings FOR INSERT TO authenticated WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to update site settings"
+    ON public.site_settings FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to delete site settings"
+    ON public.site_settings FOR DELETE TO authenticated USING (true);
+
+DROP TRIGGER IF EXISTS set_updated_at ON public.site_settings;
+CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON public.site_settings
+    FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+
+-- =====================================================
+-- 4D. INSTAGRAM GALLERY TABLE
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.instagram_gallery (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    image_url TEXT NOT NULL,
+    display_order INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+DO $$
+BEGIN
+    IF to_regclass('public.instagram_posts') IS NOT NULL THEN
+        INSERT INTO public.instagram_gallery (image_url, display_order, is_active)
+        SELECT old_posts.image_url, old_posts.display_order, old_posts.is_active
+        FROM public.instagram_posts AS old_posts
+        WHERE old_posts.image_url IS NOT NULL
+          AND NOT EXISTS (
+              SELECT 1
+              FROM public.instagram_gallery
+              WHERE public.instagram_gallery.image_url = old_posts.image_url
+          );
+    END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_instagram_gallery_active_order
+    ON public.instagram_gallery(is_active, display_order);
+
+ALTER TABLE public.instagram_gallery ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public can read active instagram gallery" ON public.instagram_gallery;
+DROP POLICY IF EXISTS "Authenticated users manage instagram gallery" ON public.instagram_gallery;
+
+CREATE POLICY "Public can read active instagram gallery"
+    ON public.instagram_gallery FOR SELECT USING (is_active = true);
+
+CREATE POLICY "Authenticated users manage instagram gallery"
+    ON public.instagram_gallery FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+
+-- =====================================================
 -- 5. STORAGE BUCKETS
 -- =====================================================
 -- Create these manually in Supabase Dashboard > Storage:
